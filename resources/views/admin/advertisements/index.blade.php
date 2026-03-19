@@ -1,68 +1,78 @@
 @extends('admin.layouts.app')
 
 @section('content')
-    <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6">
         <div>
-            <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">Reklam Yönetimi</h1>
-            <p class="text-gray-500 mt-1">Sitenizdeki reklam alanlarını buradan yönetebilirsiniz.</p>
+            <h1 class="text-4xl font-outfit font-extrabold text-slate-900 tracking-tight">Reklam Alanları</h1>
+            <p class="text-slate-500 mt-2 text-lg">Sitenizdeki gelir kanallarını ve reklam yerleşimlerini yönetin.</p>
         </div>
-        <a href="{{ route('admin.advertisements.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg font-semibold shadow-sm transition-all flex items-center">
-            <i class="fas fa-plus mr-2 text-sm"></i> Yeni Reklam Ekle
+        <a href="{{ route('admin.advertisements.create') }}" class="group bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3.5 rounded-2xl font-bold shadow-lg shadow-indigo-200 transition-all flex items-center">
+            <i class="fas fa-plus mr-2 text-sm group-hover:rotate-90 transition-transform"></i> Yeni Reklam Alanı
         </a>
     </div>
 
-    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+    <div class="bg-white rounded-[32px] shadow-sm border border-slate-200/60 overflow-hidden">
         <div class="overflow-x-auto">
-            <table class="w-full text-left">
+            <table class="w-full text-left border-collapse">
                 <thead>
-                    <tr class="bg-gray-50 text-gray-600 uppercase text-xs font-bold">
-                        <th class="px-6 py-4">Görsel</th>
-                        <th class="px-6 py-4">Başlık / Link</th>
-                        <th class="px-6 py-4 text-center">Konum</th>
-                        <th class="px-6 py-4 text-center">Durum</th>
-                        <th class="px-6 py-4 text-right">İşlemler</th>
+                    <tr class="bg-slate-50/50 text-slate-400 uppercase text-[10px] font-bold tracking-widest border-b border-slate-100">
+                        <th class="px-8 py-5">Görsel / Kod</th>
+                        <th class="px-8 py-5">Başlık & Hedef</th>
+                        <th class="px-8 py-5 text-center">Konum</th>
+                        <th class="px-8 py-5 text-center">Durum</th>
+                        <th class="px-8 py-5 text-right">İşlemler</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-100 italic-last-td">
+                <tbody class="divide-y divide-slate-50">
                     @foreach($advertisements as $ad)
-                    <tr class="hover:bg-gray-50/50 transition-colors group">
-                        <td class="px-6 py-4">
-                            <img src="{{ Str::startsWith($ad->image, ['http://', 'https://']) ? $ad->image : Storage::url($ad->image) }}" alt="Reklam" class="w-20 h-20 object-cover rounded-lg border border-gray-100 shadow-sm">
+                    <tr class="hover:bg-slate-50/50 transition-colors group">
+                        <td class="px-8 py-5">
+                            <div class="w-24 h-16 rounded-xl overflow-hidden bg-slate-100 border border-slate-200/50 flex-shrink-0 shadow-sm">
+                                @if($ad->type == 'image')
+                                    <img src="{{ \Illuminate\Support\Str::startsWith($ad->image, ['http://', 'https://']) ? $ad->image : Storage::url($ad->image) }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                                @else
+                                    <div class="w-full h-full flex items-center justify-center text-indigo-500 bg-indigo-50">
+                                        <i class="fas fa-code text-xl"></i>
+                                    </div>
+                                @endif
+                            </div>
                         </td>
-                        <td class="px-6 py-4">
-                            <div class="font-semibold text-gray-900">{{ $ad->title ?? 'İsimsiz Reklam' }}</div>
+                        <td class="px-8 py-5">
+                            <div class="font-bold text-slate-800 group-hover:text-indigo-600 transition-colors">{{ $ad->title ?? 'İsimsiz Reklam' }}</div>
                             @if($ad->link)
-                                <div class="text-xs text-blue-500 mt-0.5 truncate max-w-xs">{{ $ad->link }}</div>
+                                <div class="text-[11px] text-slate-400 mt-1 font-medium truncate max-w-xs flex items-center">
+                                    <i class="fas fa-link mr-1.5 opacity-50"></i> {{ $ad->link }}
+                                </div>
                             @else
-                                <div class="text-xs text-gray-400 mt-0.5 italic">Link Yok</div>
+                                <div class="text-[11px] text-slate-300 mt-1 italic">Yönlendirme linki belirtilmemiş</div>
                             @endif
                         </td>
-                        <td class="px-6 py-4 text-center">
-                            <span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-xs font-bold border border-gray-200 uppercase">
-                                {{ $ad->position }}
+                        <td class="px-8 py-5 text-center">
+                            <span class="bg-slate-100 text-slate-600 px-3 py-1.5 rounded-lg text-[10px] font-extrabold tracking-wider border border-slate-200 px-3">
+                                {{ strtoupper($ad->position) }}
                             </span>
                         </td>
-                        <td class="px-6 py-4 text-center">
+                        <td class="px-8 py-5 text-center">
                             @if($ad->is_active)
-                                <span class="bg-green-50 text-green-700 px-3 py-1 rounded-full text-xs font-bold border border-green-100 flex items-center justify-center w-max mx-auto">
-                                    <span class="w-1.5 h-1.5 bg-green-500 rounded-full mr-2"></span> Aktif
+                                <span class="bg-emerald-50 text-emerald-600 px-3 py-1 rounded-full text-[10px] font-extrabold tracking-wider border border-emerald-100 ring-4 ring-emerald-50/30 inline-flex items-center">
+                                    <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full mr-2 animate-pulse"></span> AKTİF
                                 </span>
                             @else
-                                <span class="bg-red-50 text-red-700 px-3 py-1 rounded-full text-xs font-bold border border-red-100 flex items-center justify-center w-max mx-auto">
-                                    <span class="w-1.5 h-1.5 bg-red-500 rounded-full mr-2"></span> Pasif
+                                <span class="bg-rose-50 text-rose-600 px-3 py-1 rounded-full text-[10px] font-extrabold tracking-wider border border-rose-100 ring-4 ring-rose-50/30 inline-flex items-center">
+                                    <span class="w-1.5 h-1.5 bg-rose-500 rounded-full mr-2"></span> PASİF
                                 </span>
                             @endif
                         </td>
-                        <td class="px-6 py-4 text-right">
-                            <div class="flex justify-end space-x-2">
-                                <a href="{{ route('admin.advertisements.edit', $ad->id) }}" class="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition-colors border border-transparent hover:border-blue-200" title="Düzenle">
-                                    <i class="fas fa-edit"></i>
+                        <td class="px-8 py-5 text-right">
+                            <div class="flex justify-end items-center space-x-2">
+                                <a href="{{ route('admin.advertisements.edit', $ad->id) }}" class="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-amber-500 hover:bg-amber-50 rounded-xl transition-all border border-transparent hover:border-amber-100" title="Düzenle">
+                                    <i class="fas fa-edit text-sm"></i>
                                 </a>
-                                <form action="{{ route('admin.advertisements.destroy', $ad->id) }}" method="POST" onsubmit="return confirm('Bu reklamı silmek istediğinize emin misiniz?');">
+                                <form action="{{ route('admin.advertisements.destroy', $ad->id) }}" method="POST" onsubmit="return confirm('Bu reklam alanını silmek istediğinize emin misiniz?');">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors border border-transparent hover:border-red-200" title="Sil">
-                                        <i class="fas fa-trash"></i>
+                                    <button type="submit" class="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-xl transition-all border border-transparent hover:border-rose-100" title="Sil">
+                                        <i class="fas fa-trash-alt text-sm"></i>
                                     </button>
                                 </form>
                             </div>
@@ -74,7 +84,7 @@
         </div>
         
         @if($advertisements->hasPages())
-        <div class="bg-gray-50 px-6 py-4 border-t border-gray-100">
+        <div class="bg-slate-50/50 px-8 py-6 border-t border-slate-100">
             {{ $advertisements->links() }}
         </div>
         @endif

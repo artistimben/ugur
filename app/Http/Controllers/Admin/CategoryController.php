@@ -26,10 +26,16 @@ class CategoryController extends Controller
             'name' => 'required|string|max:255',
         ]);
 
-        $validated['slug'] = Str::slug($validated['name']);
+        $slug = Str::slug($validated['name']);
+        $originalSlug = $slug;
+        $count = 1;
+        while (Category::where('slug', $slug)->exists()) {
+            $slug = $originalSlug . '-' . $count++;
+        }
+        $validated['slug'] = $slug;
         Category::create($validated);
 
-        return redirect()->route('admin.categories.index')->with('success', 'Kategori eklendi.');
+        return redirect()->route('admin.categories.index')->with('success', 'Kategori başarıyla eklendi.');
     }
 
     public function edit(Category $category)
@@ -43,10 +49,16 @@ class CategoryController extends Controller
             'name' => 'required|string|max:255',
         ]);
 
-        $validated['slug'] = Str::slug($validated['name']);
+        $slug = Str::slug($validated['name']);
+        $originalSlug = $slug;
+        $count = 1;
+        while (Category::where('slug', $slug)->where('id', '!=', $category->id)->exists()) {
+            $slug = $originalSlug . '-' . $count++;
+        }
+        $validated['slug'] = $slug;
         $category->update($validated);
 
-        return redirect()->route('admin.categories.index')->with('success', 'Kategori güncellendi.');
+        return redirect()->route('admin.categories.index')->with('success', 'Kategori başarıyla güncellendi.');
     }
 
     public function destroy(Category $category)

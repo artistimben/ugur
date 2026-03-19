@@ -12,6 +12,7 @@ Route::get('/hakkimda', [BlogController::class, 'about'])->name('about');
 Route::get('/iletisim', [BlogController::class, 'contact'])->name('contact');
 Route::get('/gizlilik-politikasi', [BlogController::class, 'privacy'])->name('privacy');
 Route::get('/yazi/{slug}', [BlogController::class, 'show'])->name('post.show');
+Route::get('/kesfet', [BlogController::class, 'random'])->name('post.random');
 
 // Admin Routes (Protected)
 Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {

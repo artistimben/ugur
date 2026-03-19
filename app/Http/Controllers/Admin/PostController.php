@@ -34,11 +34,21 @@ class PostController extends Controller
             'image' => 'nullable|image|max:2048'
         ]);
 
-        $validated['slug'] = Str::slug($validated['title']);
+        $slug = Str::slug($validated['title']);
+        $originalSlug = $slug;
+        $count = 1;
+        while (Post::where('slug', $slug)->exists()) {
+            $slug = $originalSlug . '-' . $count++;
+        }
+        $validated['slug'] = $slug;
         $validated['is_published'] = $request->has('is_published');
 
         if ($request->hasFile('image')) {
             $validated['image'] = $request->file('image')->store('posts', 'public');
+        }
+
+        if (empty($validated['excerpt'])) {
+            $validated['excerpt'] = Str::limit(strip_tags($validated['content']), 150);
         }
 
         Post::create($validated);
@@ -62,7 +72,13 @@ class PostController extends Controller
             'image' => 'nullable|image|max:2048'
         ]);
 
-        $validated['slug'] = Str::slug($validated['title']);
+        $slug = Str::slug($validated['title']);
+        $originalSlug = $slug;
+        $count = 1;
+        while (Post::where('slug', $slug)->where('id', '!=', $post->id)->exists()) {
+            $slug = $originalSlug . '-' . $count++;
+        }
+        $validated['slug'] = $slug;
         $validated['is_published'] = $request->has('is_published');
 
         if ($request->hasFile('image')) {
@@ -70,6 +86,10 @@ class PostController extends Controller
                 Storage::disk('public')->delete($post->image);
             }
             $validated['image'] = $request->file('image')->store('posts', 'public');
+        }
+
+        if (empty($validated['excerpt'])) {
+            $validated['excerpt'] = Str::limit(strip_tags($validated['content']), 150);
         }
 
         $post->update($validated);

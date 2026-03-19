@@ -6,47 +6,38 @@ use Illuminate\Http\Request;
 
 class BlogController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $featuredTitles = [
-            'SEVGİ… BİLDİĞİMİZ GİBİ Mİ?',
-            'AŞAĞILIK KOMPLEKSİ İNSAN DÖVMEYE',
-            'BİLGİ VE SEVGİNİN BİRLEŞİMİ',
-            'BABA YARASIMI',
-            'PROBLEM GENÇLERDE Mİ',
-            'ÇEKTİKLERİMİZ HEP KENDİ ELİMİZDEN Mİ'
-        ];
+        $query = \App\Models\Post::with('category')->where('is_published', true);
 
-        $galleryPosts = \App\Models\Post::where('is_published', true)
-            ->where(function($q) use ($featuredTitles) {
-                foreach ($featuredTitles as $title) {
-                    $q->orWhere('title', 'LIKE', '%' . $title . '%');
-                }
-            })
-            ->get();
+        if ($request->has('category')) {
+            $query->whereHas('category', function($q) use ($request) {
+                $q->where('slug', $request->category);
+            });
+        }
 
-        $galleryIds = $galleryPosts->pluck('id');
+        if ($request->has('q')) {
+            $query->where('title', 'LIKE', '%' . $request->q . '%')
+                  ->orWhere('content', 'LIKE', '%' . $request->q . '%');
+        }
 
-        $posts = \App\Models\Post::with('category')
-            ->where('is_published', true)
-            ->whereNotIn('id', $galleryIds)
-            ->latest()
-            ->paginate(10);
-
-        $bannerPosts = $posts->take(3);
-        $sidebarPosts = $posts->take(5);
-
+        $posts = $query->latest()->paginate(12);
+        
         $ads = \App\Models\Advertisement::where('is_active', true)->get();
 
-        return view('blog.index', compact('posts', 'bannerPosts', 'sidebarPosts', 'galleryPosts', 'ads'));
+        return view('blog.index', compact('posts', 'ads'));
     }
-
     public function show($slug)
     {
         $post = \App\Models\Post::where('slug', $slug)->where('is_published', true)->firstOrFail();
-        $sidebarPosts = \App\Models\Post::where('is_published', true)->latest()->take(5)->get();
         $ads = \App\Models\Advertisement::where('is_active', true)->get();
-        return view('blog.show', compact('post', 'sidebarPosts', 'ads'));
+        $relatedPosts = \App\Models\Post::where('category_id', $post->category_id)
+            ->where('id', '!=', $post->id)
+            ->where('is_published', true)
+            ->latest()
+            ->take(3)
+            ->get();
+        return view('blog.show', compact('post', 'ads', 'relatedPosts'));
     }
 
     public function about()
@@ -70,5 +61,11 @@ class BlogController extends Controller
     {
         $ads = \App\Models\Advertisement::where('is_active', true)->get();
         return view('pages.gizlilik', compact('ads'));
+    }
+    public function random()
+    {
+        $post = \App\Models\Post::where('is_published', true)->inRandomOrder()->first();
+        if (!$post) return redirect()->route('home');
+        return redirect()->route('post.show', $post->slug);
     }
 }

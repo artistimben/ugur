@@ -38,6 +38,7 @@ class AdvertisementController extends Controller
             $validated['image'] = $path;
         }
 
+        $validated['is_active'] = $request->has('is_active');
         Advertisement::create($validated);
 
         return redirect()->route('admin.advertisements.index')->with('success', 'Reklam eklendi.');
@@ -68,6 +69,7 @@ class AdvertisementController extends Controller
             $validated['image'] = $path;
         }
 
+        $validated['is_active'] = $request->has('is_active');
         $advertisement->update($validated);
 
         return redirect()->route('admin.advertisements.index')->with('success', 'Reklam güncellendi.');

@@ -1,114 +1,50 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="breadcrumb" style="margin-bottom: 30px; text-align: center;">
-        <a href="{{ route('home') }}">Ana sayfa</a> / İletişim
-    </div>
-    
-    <div class="post-body contact-container">
-        <p class="contact-intro">Benimle iletişime geçmek için aşağıdaki kanalları kullanabilirsiniz. Size yardımcı olmaktan mutluluk duyarım.</p>
-        
-        <div class="contact-grid">
-            <!-- Mail Card -->
-            <div class="contact-card">
-                <div class="contact-icon">
+<div class="container">
+    <article class="single-post">
+        <header class="single-post-header">
+            <h1 style="font-size: 56px; margin-bottom: 24px;">İletişim</h1>
+            <div class="single-post-meta">
+                <span>Dilek, öneri ve talepleriniz için bana ulaşabilirsiniz.</span>
+            </div>
+        </header>
+
+        <div class="single-post-content" style="max-width: 900px;">
+            <div class="contact-methods-grid" style="margin: 60px 0;">
+                
+                <!-- Email -->
+                <div class="contact-method-card">
                     <i class="fas fa-envelope-open-text"></i>
+                    <h3>E-posta</h3>
+                    <p><a href="mailto:ugurkantekin@gmail.com">ugurkantekin@gmail.com</a></p>
                 </div>
-                <h3>E-posta</h3>
-                <p><a href="mailto:ugurkantekin@gmail.com">ugurkantekin@gmail.com</a></p>
-            </div>
 
-            <!-- Phone Card -->
-            <div class="contact-card">
-                <div class="contact-icon">
+                <!-- Phone -->
+                <div class="contact-method-card">
                     <i class="fas fa-phone-alt"></i>
+                    <h3>Telefon</h3>
+                    <p><a href="tel:+905324044142">0532 404 41 42</a></p>
                 </div>
-                <h3>Telefon</h3>
-                <p><a href="tel:+905324044142">0532 404 41 42</a></p>
-            </div>
 
-            <!-- WhatsApp Card -->
-            <div class="contact-card whatsapp">
-                <div class="contact-icon">
+                <!-- WhatsApp -->
+                <div class="contact-method-card whatsapp">
                     <i class="fab fa-whatsapp"></i>
+                    <h3>WhatsApp</h3>
+                    <p><a href="https://wa.me/905324044142?text=Merhaba%20Ugur%20Bey,%20sitenizden%20ulasiyorum." target="_blank">Hemen Yazın</a></p>
                 </div>
-                <h3>WhatsApp</h3>
-                <p><a href="https://wa.me/905324044142?text=Merhaba%20Ugur%20Bey,%20sitenizden%20ulasiyorum." target="_blank">Hemen Yazın</a></p>
+            </div>
+
+            <div style="margin-top: 80px; text-align: center; padding: 60px; border-top: 1px solid var(--border-color);">
+                <h4 style="font-family: var(--font-heading); font-size: 24px; margin-bottom: 16px;">Bir mesajınız mı var?</h4>
+                <p style="color: var(--text-muted); font-size: 16px;">Düşüncelerinizi paylaşmak veya danışmanlık talepleriniz için dilediğiniz zaman ulaşabilirsiniz.</p>
+                <div style="margin-top: 40px; font-size: 20px; color: var(--accent-color);">
+                    <i class="fab fa-instagram" style="margin: 0 16px;"></i>
+                    <i class="fab fa-facebook" style="margin: 0 16px;"></i>
+                    <i class="fab fa-twitter" style="margin: 0 16px;"></i>
+                </div>
             </div>
         </div>
-
-        <div class="contact-footer-text">
-            <p>Düşüncelerinizi paylaşmak veya danışmanlık talepleriniz için dilediğiniz zaman ulaşabilirsiniz.</p>
-        </div>
-    </div>
-
-    <style>
-        .contact-container {
-            max-width: 800px;
-            margin: 0 auto;
-            text-align: center;
-        }
-        .contact-intro {
-            font-size: 1.1rem;
-            color: #666;
-            margin-bottom: 40px;
-            font-style: italic;
-        }
-        .contact-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 25px;
-            margin-bottom: 40px;
-        }
-        .contact-card {
-            background: #fff;
-            padding: 30px 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border: 1px solid #f0f0f0;
-        }
-        .contact-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-        }
-        .contact-icon {
-            font-size: 2.5rem;
-            color: var(--accent);
-            margin-bottom: 15px;
-        }
-        .contact-card h3 {
-            font-family: 'Cabin', sans-serif;
-            font-size: 1.2rem;
-            margin-bottom: 10px;
-            color: #333;
-        }
-        .contact-card p a {
-            color: #555;
-            font-weight: 500;
-            text-decoration: none;
-            transition: color 0.2s;
-        }
-        .contact-card p a:hover {
-            color: var(--accent);
-        }
-        .contact-card.whatsapp {
-            background: #f4fff8;
-            border-color: #25d36633;
-        }
-        .contact-card.whatsapp .contact-icon {
-            color: #25d366;
-        }
-        .contact-card.whatsapp p a {
-            color: #128c7e;
-            font-weight: bold;
-        }
-        .contact-footer-text {
-            margin-top: 50px;
-            padding-top: 30px;
-            border-top: 1px dashed #eee;
-            color: #888;
-            font-size: 0.95rem;
-        }
-    </style>
+    </article>
+</div>
 @endsection
