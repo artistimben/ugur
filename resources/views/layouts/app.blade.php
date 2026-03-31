@@ -140,7 +140,7 @@
                 <span class="ad-label">REKLAM</span>
                 @if($leftAd->type == 'script') {!! $leftAd->script_code !!} @else
                     <a href="{{ $leftAd->link }}" target="_blank">
-                        <img src="{{ \Illuminate\Support\Str::startsWith($leftAd->image, ['http://', 'https://']) ? $leftAd->image : asset($leftAd->image) }}" onerror="this.parentElement.parentElement.style.display='none'">
+                        <img src="{{ \Illuminate\Support\Str::startsWith($leftAd->image, ['http://', 'https://']) ? $leftAd->image : asset($leftAd->image) }}" onerror="this.onerror=null; this.parentElement.parentElement.style.display='none';">
                     </a>
                 @endif
             </div>
@@ -151,7 +151,7 @@
                 <span class="ad-label">REKLAM</span>
                 @if($rightAd->type == 'script') {!! $rightAd->script_code !!} @else
                     <a href="{{ $rightAd->link }}" target="_blank">
-                        <img src="{{ \Illuminate\Support\Str::startsWith($rightAd->image, ['http://', 'https://']) ? $rightAd->image : asset($rightAd->image) }}" onerror="this.parentElement.parentElement.style.display='none'">
+                        <img src="{{ \Illuminate\Support\Str::startsWith($rightAd->image, ['http://', 'https://']) ? $rightAd->image : asset($rightAd->image) }}" onerror="this.onerror=null; this.parentElement.parentElement.style.display='none';">
                     </a>
                 @endif
             </div>

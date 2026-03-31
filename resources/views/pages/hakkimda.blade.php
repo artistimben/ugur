@@ -17,7 +17,7 @@
                     $aboutImg = 'storage/' . $aboutImg;
                 }
             @endphp
-            <img src="{{ \Illuminate\Support\Str::startsWith($page->image, ['http://', 'https://']) ? $page->image : asset($aboutImg) }}" alt="{{ $page->title }}" style="width: 100%; height: auto; border-radius: 8px;" onerror="this.src='{{ asset('images/profile.jpg') }}'">
+            <img src="{{ \Illuminate\Support\Str::startsWith($page->image, ['http://', 'https://']) ? $page->image : asset($aboutImg) }}" alt="{{ $page->title }}" style="width: 100%; height: auto; border-radius: 8px;" onerror="this.onerror=null; this.src='{{ asset('images/profile.jpg') }}';">
         </div>
 
         <div class="single-post-content" style="max-width: 800px; margin-top: 60px;">
