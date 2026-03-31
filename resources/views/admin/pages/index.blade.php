@@ -6,6 +6,9 @@
             <h1 class="text-4xl font-outfit font-extrabold text-slate-900 tracking-tight">Sayfa Yönetimi</h1>
             <p class="text-slate-500 mt-2 text-lg">Statik sayfalarınızın (Hakkımda, vb.) içeriğini yönetin.</p>
         </div>
+        <a href="{{ route('admin.pages.create') }}" class="bg-indigo-600 text-white px-8 py-4 rounded-2xl hover:bg-indigo-700 shadow-xl shadow-indigo-100 transition-all font-bold flex items-center group">
+            <i class="fas fa-plus mr-3 text-xs group-hover:rotate-90 transition-transform"></i> Yeni Sayfa Ekle
+        </a>
     </div>
 
     <div class="bg-white rounded-[32px] shadow-sm border border-slate-200/60 overflow-hidden relative">

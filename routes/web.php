@@ -27,7 +27,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::post('posts/bulk-image', [PostController::class, 'bulkImage'])->name('posts.bulk-image');
     Route::resource('categories', CategoryController::class);
     Route::resource('advertisements', \App\Http\Controllers\Admin\AdvertisementController::class);
-    Route::resource('pages', \App\Http\Controllers\Admin\PageController::class)->only(['index', 'edit', 'update']);
+    Route::resource('pages', \App\Http\Controllers\Admin\PageController::class);
 });
 
 // Profile Routes (from Breeze)
