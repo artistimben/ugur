@@ -67,7 +67,7 @@
                             <span class="text-xs font-bold text-slate-500 bg-slate-100 px-2.5 py-1 rounded-lg border border-slate-200/50">{{ optional($post->category)->name }}</span>
                         </td>
                         <td class="px-8 py-5">
-                            <div class="text-xs font-bold text-slate-800">{{ $post->created_at->format('d M, Y') }}</div>
+                            <div class="text-xs font-bold text-slate-800">{{ $post->created_at->translatedFormat('d M Y') }}</div>
                             <div class="text-[10px] text-slate-400 mt-0.5">{{ $post->created_at->format('H:i') }}</div>
                         </td>
                         <td class="px-8 py-5 text-right">

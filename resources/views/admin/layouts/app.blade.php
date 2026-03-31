@@ -119,6 +119,12 @@
                         <i class="fas fa-shapes w-5 text-center group-hover:scale-110 transition-transform"></i>
                         <span class="font-medium">Kategoriler</span>
                     </a>
+
+                    <a href="{{ route('admin.pages.index') }}" 
+                       class="sidebar-link flex items-center space-x-3 p-3.5 rounded-xl transition-all duration-200 group {{ request()->routeIs('admin.pages.*') ? 'active' : '' }}">
+                        <i class="fas fa-file-lines w-5 text-center group-hover:scale-110 transition-transform"></i>
+                        <span class="font-medium">Sayfalar</span>
+                    </a>
                     
                     <div class="pt-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest px-4 mb-2">Pazarlama</div>
 

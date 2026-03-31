@@ -42,13 +42,9 @@ class BlogController extends Controller
 
     public function about()
     {
-        $galleryImages = \App\Models\Post::where('is_published', true)
-            ->whereNotNull('image')
-            ->latest()
-            ->take(10)
-            ->pluck('image');
+        $page = \App\Models\Page::where('slug', 'hakkimda')->firstOrFail();
         $ads = \App\Models\Advertisement::where('is_active', true)->get();
-        return view('pages.hakkimda', compact('galleryImages', 'ads'));
+        return view('pages.hakkimda', compact('page', 'ads'));
     }
 
     public function contact()
