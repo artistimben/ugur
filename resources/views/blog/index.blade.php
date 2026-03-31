@@ -20,7 +20,7 @@
 
 <div class="container main-wrapper">
     <!-- Center Column -->
-    <div class="main-column">
+    <div class="main-column" style="min-height: 800px;">
         @if($currentCategory)
             <div style="margin: 40px 0 60px; padding-bottom: 40px; border-bottom: 1px solid var(--border-color);">
                 <div style="display: flex; align-items: center; gap: 20px; color: {{ $catConfig['accent'] }}; margin-bottom: 16px;">
@@ -34,9 +34,15 @@
         <div class="blog-grid">
             @foreach($posts as $post)
                 <article class="post-card">
+                    @php
+                        $imagePath = $post->image;
+                        if ($imagePath && !\Illuminate\Support\Str::startsWith($imagePath, ['http://', 'https://', 'images/'])) {
+                            $imagePath = 'storage/' . $imagePath;
+                        }
+                    @endphp
                     <a href="{{ route('post.show', $post->slug) }}" class="post-image">
                         @if($post->image)
-                            <img src="{{ \Illuminate\Support\Str::startsWith($post->image, ['http://', 'https://']) ? $post->image : Storage::url($post->image) }}" alt="{{ $post->title }}" loading="lazy" onerror="this.parentElement.classList.add('img-error'); this.style.display='none'; this.parentElement.innerHTML += '<div class=\'no-image-placeholder\'><i class=\'fas fa-feather-alt\'><\/i><\/div>'">
+                            <img src="{{ \Illuminate\Support\Str::startsWith($post->image, ['http://', 'https://']) ? $post->image : asset($imagePath) }}" alt="{{ $post->title }}" loading="lazy" onerror="this.parentElement.classList.add('img-error'); this.style.display='none'; this.parentElement.innerHTML += '<div class=\'no-image-placeholder\'><i class=\'fas fa-feather-alt\'><\/i><\/div>'">
                         @else
                             <div class="no-image-placeholder">
                                 <i class="fas fa-feather-alt"></i>
@@ -54,12 +60,18 @@
                 </article>
 
                 @if($loop->iteration == 3 && $ads->where('position', 'between')->first())
-                    @php $ad = $ads->where('position', 'between')->first(); @endphp
+                    @php 
+                        $ad = $ads->where('position', 'between')->first(); 
+                        $adImage = $ad->image;
+                        if ($adImage && !\Illuminate\Support\Str::startsWith($adImage, ['http://', 'https://', 'images/'])) {
+                            $adImage = 'storage/' . $adImage;
+                        }
+                    @endphp
                     <div class="ad-space" style="grid-column: 1 / -1; margin: 30px 0; background: var(--section-bg); padding: 40px; border-radius: 4px; text-align: center;">
                         <span style="font-size: 10px; color: #999; text-transform: uppercase; display: block; margin-bottom: 15px;">Reklam</span>
                         @if($ad->type == 'script') {!! $ad->script_code !!} @else
                             <a href="{{ $ad->link }}" target="_blank">
-                                <img src="{{ \Illuminate\Support\Str::startsWith($ad->image, ['http://', 'https://']) ? $ad->image : Storage::url($ad->image) }}" style="max-width: 100%; border-radius: 4px;" onerror="this.parentElement.parentElement.style.display='none'">
+                                <img src="{{ \Illuminate\Support\Str::startsWith($ad->image, ['http://', 'https://']) ? $ad->image : asset($adImage) }}" style="max-width: 100%; border-radius: 4px;" onerror="this.parentElement.parentElement.style.display='none'">
                             </a>
                         @endif
                     </div>
@@ -67,9 +79,11 @@
             @endforeach
         </div>
 
+        @if($posts->hasPages())
         <div class="pagination-wrapper">
             {{ $posts->appends(request()->query())->links('vendor.pagination.premium') }}
         </div>
+        @endif
 
         <div style="margin-top: 100px; padding: 100px 60px; background: {{ $catConfig['accent'] }}; color: white; border-radius: 4px; text-align: center; position: relative; overflow: hidden;">
             <i class="fas fa-quote-left" style="position: absolute; top: 40px; left: 40px; font-size: 80px; opacity: 0.1;"></i>
@@ -80,15 +94,21 @@
 
     <!-- Sidebar Column for Ads -->
     @if($ads->where('position', 'sidebar')->count() > 0)
-    <aside class="sidebar-column" style="width: 320px; display: flex; flex-direction: column; gap: 40px;">
+    <aside class="sidebar-column" style="width: 320px; display: flex; flex-direction: column; gap: 40px; flex-shrink: 0;">
         @foreach($ads->where('position', 'sidebar') as $ad)
+            @php
+                $sideAdImage = $ad->image;
+                if ($sideAdImage && !\Illuminate\Support\Str::startsWith($sideAdImage, ['http://', 'https://', 'images/'])) {
+                    $sideAdImage = 'storage/' . $sideAdImage;
+                }
+            @endphp
             <div class="sidebar-ad-widget" style="background: white; padding: 20px; border-radius: 4px; border: 1px solid var(--border-color);">
                 <span style="font-size: 10px; color: #999; text-transform: uppercase; letter-spacing: 2px; display: block; margin-bottom: 15px;">Reklam</span>
                 @if($ad->type == 'script')
                     {!! $ad->script_code !!}
                 @else
                     <a href="{{ $ad->link }}" target="_blank">
-                        <img src="{{ \Illuminate\Support\Str::startsWith($ad->image, ['http://', 'https://']) ? $ad->image : Storage::url($ad->image) }}" style="width: 100%; border-radius: 4px;">
+                        <img src="{{ \Illuminate\Support\Str::startsWith($ad->image, ['http://', 'https://']) ? $ad->image : asset($sideAdImage) }}" style="width: 100%; border-radius: 4px;">
                     </a>
                 @endif
             </div>

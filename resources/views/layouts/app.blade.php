@@ -140,7 +140,7 @@
                 <span class="ad-label">REKLAM</span>
                 @if($leftAd->type == 'script') {!! $leftAd->script_code !!} @else
                     <a href="{{ $leftAd->link }}" target="_blank">
-                        <img src="{{ \Illuminate\Support\Str::startsWith($leftAd->image, ['http://', 'https://']) ? $leftAd->image : Storage::url($leftAd->image) }}" onerror="this.parentElement.parentElement.style.display='none'">
+                        <img src="{{ \Illuminate\Support\Str::startsWith($leftAd->image, ['http://', 'https://']) ? $leftAd->image : asset($leftAd->image) }}" onerror="this.parentElement.parentElement.style.display='none'">
                     </a>
                 @endif
             </div>
@@ -151,7 +151,7 @@
                 <span class="ad-label">REKLAM</span>
                 @if($rightAd->type == 'script') {!! $rightAd->script_code !!} @else
                     <a href="{{ $rightAd->link }}" target="_blank">
-                        <img src="{{ \Illuminate\Support\Str::startsWith($rightAd->image, ['http://', 'https://']) ? $rightAd->image : Storage::url($rightAd->image) }}" onerror="this.parentElement.parentElement.style.display='none'">
+                        <img src="{{ \Illuminate\Support\Str::startsWith($rightAd->image, ['http://', 'https://']) ? $rightAd->image : asset($rightAd->image) }}" onerror="this.parentElement.parentElement.style.display='none'">
                     </a>
                 @endif
             </div>
@@ -163,7 +163,7 @@
             <span class="ad-label">REKLAM</span>
             @if($topAd->type == 'script') {!! $topAd->script_code !!} @else
                 <a href="{{ $topAd->link }}" target="_blank">
-                    <img src="{{ \Illuminate\Support\Str::startsWith($topAd->image, ['http://', 'https://']) ? $topAd->image : Storage::url($topAd->image) }}" style="max-width: 100%; border-radius: 4px;">
+                    <img src="{{ \Illuminate\Support\Str::startsWith($topAd->image, ['http://', 'https://']) ? $topAd->image : asset($topAd->image) }}" style="max-width: 100%; border-radius: 4px;">
                 </a>
             @endif
         </div>

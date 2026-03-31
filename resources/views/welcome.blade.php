@@ -19,15 +19,15 @@
             <p style="color: #999; font-style: italic;">Henüz bu kategoride yazı eklenmedi.</p>
         </div>
     @else
-        <div class="blog-grid">
+        <div class="blog-grid" style="min-height: 800px;">
             @foreach($posts as $post)
             <article class="post-card">
                 <a href="{{ route('post.show', $post->slug) }}" class="post-image">
                     @if($post->image)
-                    <img src="{{ \Illuminate\Support\Str::startsWith($post->image, ['http://', 'https://']) ? $post->image : Storage::url($post->image) }}" alt="{{ $post->title }}">
+                    <img src="{{ \Illuminate\Support\Str::startsWith($post->image, ['http://', 'https://']) ? $post->image : asset($post->image) }}" alt="{{ $post->title }}" onerror="this.parentElement.classList.add('img-error'); this.style.display='none'; this.parentElement.innerHTML += '<div class=\'no-image-placeholder\'><i class=\'fas fa-feather-alt\'></i></div>'">
                     @else
-                    <div style="background: #f0f0f0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
-                        <i class="fas fa-image" style="color: #ccc; font-size: 40px;"></i>
+                    <div class="no-image-placeholder">
+                        <i class="fas fa-feather-alt"></i>
                     </div>
                     @endif
                 </a>
