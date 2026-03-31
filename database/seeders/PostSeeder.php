@@ -286,28 +286,91 @@ class PostSeeder extends Seeder
             ],
         ];
 
-        // Mevcut seeded post'ları temizle ve yeniden ekle
+        // Mevcut seeded post'ları temizle
         Post::query()->delete();
 
         foreach ($posts as $postData) {
-            $slug = Str::slug($postData['title']);
-            // Slug benzersizliğini sağla
-            $originalSlug = $slug;
-            $count = 1;
-            while (Post::where('slug', $slug)->exists()) {
-                $slug = $originalSlug . '-' . $count;
-                $count++;
-            }
-
-            Post::create([
-                'title'        => $postData['title'],
-                'slug'         => $slug,
-                'content'      => $postData['content'],
-                'excerpt'      => $postData['excerpt'],
-                'category_id'  => $postData['cat'],
-                'image'        => $postData['image'],
-                'is_published' => true,
-            ]);
+            $this->createPost($postData);
         }
+
+        // Kategori bazlı post sayılarını kontrol et ve ekle
+        $categoryTitles = [
+            'Genel Yazılar'        => ['Hayatın Dengesi', 'Gülümsemenin Gücü', 'Zaman Yönetimi Sanatı', 'Kuşaklar Arası İletişim', 'Kitap Okuma Alışkanlığı', 'Başarıya Giden Yol', 'Mutluluk Arayışı', 'Dinlenmenin Önemi', 'Sabır ve Azim', 'Yaşam Kalitesini Artırma'],
+            'Kişisel Gelişim'      => ['Kendini Tanıma Yolculuğu', 'Özgüven İnşası', 'Hedef Belirleme Stratejileri', 'Duygusal Zeka Gelişimi', 'Motivasyon Kaynakları', 'Konuşma Sanatı', 'Karar Verme Süreçleri', 'Stres Yönetimi Teknikleri', 'Yaratıcı Düşünme', 'Liderlik Vasıfları'],
+            'Çocuk Yetiştirme'     => ['Çocuklarda Oyunun Önemi', 'Disiplin ve Sevgi Dengesi', 'Ekran Bağımlılığıyla Mücadele', 'Ergenlik Dönemi Sorunları', 'Sorumluluk Bilinci Kazandırma', 'Çocuklarda Özgüven Gelişimi', 'Kardeş Kıskançlığı', 'Kitap Sevgisi Aşılamak', 'Okul Başarısını Artırma', 'Çocukla Kaliteli Vakit'],
+            'Aile ve İlişkiler'    => ['Eşler Arası Sağlıklı İletişim', 'Aile İçi Huzur', 'Rol Çatışmaları', 'Geniş Aile Sorunları', 'Güven İnşası', 'Tartışma Kültürü', 'Birlikte Vakit Geçirme', 'Empati ve Anlayış', 'Kriz Yönetimi', 'Sevgi Dili'],
+            'Aile İletişimi'       => ['Etkin Dinleme Teknikleri', 'Açık İletişimin Önemi', 'Sözel Olmayan Mesajlar', 'Ortak Dil Oluşturmak', 'Geri Bildirim Sanatı', 'Anlaşılma İhtiyacı', 'Doğru Soru Sorma', 'Öfke Kontrolü', 'Çatışma Çözme', 'Hoşgörü İklimi'],
+            'Psikoloji ve Sağlık'  => ['Ruh Sağlığını Korumak', 'Kaygı ile Başa Çıkma', 'Depresyon Belirtileri', 'Uyku Düzeni ve Psikoloji', 'Beslenme ve Ruh Hali', 'Pozitif Bakış Açısı', 'Vücut Dili ve Ruh', 'Panik Atakla Mücadele', 'Hafıza Güçlendirme', 'Zihinsel Arınma'],
+            'Eğitim'               => ['Modern Eğitim Yaklaşımları', 'Öğretmen-Öğrenci İlişkisi', 'Sınav Kaygısını Yenmek', 'Yaşam Boyu Öğrenme', 'Okul Öncesi Eğitimin Önemi', 'Dijital Eğitim Araçları', 'Meslek Seçimi Rehberi', 'Yabancı Dil Öğrenme', 'Sanat ve Eğitim', 'Sporun Eğitime Katkısı'],
+            'Teknoloji ve Toplum'   => ['Dijital Çağda İnsan Olmak', 'Yapay Zeka ve Geleceğimiz', 'Sosyal Medya Etikleri', 'Siber Güvenlik Farkındalığı', 'Teknoloji Detoksu', 'İnternetin Sosyolojik Etkisi', 'Mobil Uygulamaların Gücü', 'Veri Gizliliği', 'E-Ticaret ve Değişim', 'Geleceğin Meslekleri'],
+            'Manevi Yazılar'       => ['Gönül Dünyamızda Yolculuk', 'Şükür Bilinci', 'Affetmenin Huzuru', 'Kalp Kırmamak', 'Merhamet ve Vicdan', 'Manevi Boşluk ve Arayış', 'İmanın Tadı', 'Dua ve Rezzak', 'Güzel Ahlak', 'Ömür Muhasebesi'],
+            'Dini Bilgiler'        => ['İbadetin Özü', 'Sünnete Uygun Yaşam', 'İhlas ve Samimiyet', 'Helal Kazanç Hassasiyeti', 'Kuranın Rehberliği', 'Peygamber Ahlakı', 'Sabrın Mükafatı', 'Zekat ve Yardımlaşma', 'Gıybet ve Etkileri', 'Zikir ve Tefekkür'],
+            'Genel'                => ['Hayata Bakış Açısı', 'Küçük Mutluluklar', 'Komşuluk Hakları', 'Doğa ve İnsan', 'Yardımlaşma Kültürü', 'Dürüstlük ve Güven', 'Saygı ve Hoşgörü', 'Paylaşmanın Güzelliği', 'Adalet Duygusu', 'Vefa Borcu'],
+        ];
+
+        // Kategori bazlı görsel anahtar kelimeleri
+        $categoryKeywords = [
+            'Genel Yazılar'        => 'nature,life,path,mountain,river',
+            'Kişisel Gelişim'      => 'growth,mind,success,climbing,meditation',
+            'Çocuk Yetiştirme'     => 'child,play,baby,kids,park',
+            'Aile ve İlişkiler'    => 'family,couple,home,love,dinner',
+            'Aile İletişimi'       => 'talk,chat,listen,friendship,community',
+            'Psikoloji ve Sağlık'  => 'brain,mind,health,calm,yoga',
+            'Eğitim'               => 'book,school,study,library,pencil',
+            'Teknoloji ve Toplum'   => 'tech,digital,robot,coding,future',
+            'Manevi Yazılar'       => 'spirituality,peace,prayer,light,clouds',
+            'Dini Bilgiler'        => 'mosque,prayer,quran,islamic,star',
+            'Genel'                => 'abstract,texture,city,landscape,ocean',
+        ];
+
+        foreach (Category::all() as $category) {
+            $currentCount = Post::where('category_id', $category->id)->count();
+            if ($currentCount < 10) {
+                $needed = 10 - $currentCount;
+                $titles = $categoryTitles[$category->name] ?? $categoryTitles['Genel'];
+                $keyword = $categoryKeywords[$category->name] ?? $categoryKeywords['Genel'];
+                
+                for ($i = 0; $i < $needed; $i++) {
+                    $title = $titles[$i] ?? ($category->name . ' - Makale ' . ($i + 1));
+                    
+                    // Benzersiz görsel URL'si oluştur (Unsplash sig parametresi ile)
+                    $imageUrl = "https://images.unsplash.com/photo-" . (1500000000000 + $category->id * 1000 + $i) . "?w=800&q=80&sig=" . ($category->id * 100 + $i) . "&q=" . urlencode($keyword);
+                    // Alternatif olarak Unsplash source (legacy ama bazen daha iyi sonuç veriyor) yerine daha güvenilir rastgele görsel yöntemi:
+                    $imageUrl = "https://picsum.photos/seed/" . md5($title) . "/800/600";
+                    // Ama Unsplash daha kaliteli olduğu için keyword bazlı Unsplash kullanalım:
+                    $imageUrl = "https://loremflickr.com/800/600/" . str_replace(',', ' ', $keyword) . "?lock=" . ($category->id * 100 + $i);
+
+                    $this->createPost([
+                        'title'        => $title,
+                        'excerpt'      => $category->name . ' alanında güncel ve özgün bir perspektif sunan bu yazı, ' . $title . ' konusuna odaklanmaktadır.',
+                        'content'      => $category->name . ' dünyasına dair önemli bir çalışma olan "' . $title . '" makalemizde, hayata dair derinlemesine analizler ve pratik öneriler bulacaksınız. ' . $category->name . ' üzerine yaptığımız bu araştırma, bireyin gelişim yolculuğunda yeni ufuklar açmayı hedeflemektedir. Modern dünyada ' . $category->name . ' konusunun önemi her geçen gün artmaktadır.',
+                        'image'        => $imageUrl,
+                        'cat'          => $category->id,
+                        'published_at' => now()->subDays($i + 10)->toDateString(),
+                    ]);
+                }
+            }
+        }
+    }
+
+    private function createPost(array $postData): void
+    {
+        $slug = Str::slug($postData['title']);
+        $originalSlug = $slug;
+        $count = 1;
+        while (Post::where('slug', $slug)->exists()) {
+            $slug = $originalSlug . '-' . $count;
+            $count++;
+        }
+
+        Post::create([
+            'title'        => $postData['title'],
+            'slug'         => $slug,
+            'content'      => $postData['content'],
+            'excerpt'      => $postData['excerpt'],
+            'category_id'  => $postData['cat'],
+            'image'        => $postData['image'],
+            'is_published' => true,
+        ]);
     }
 }
