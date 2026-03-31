@@ -11,11 +11,21 @@
         </a>
     </div>
 
-    <div class="bg-white rounded-[32px] shadow-sm border border-slate-200/60 overflow-hidden">
+    <div class="bg-white rounded-[32px] shadow-sm border border-slate-200/60 overflow-hidden relative">
+        <div id="bulk-action-bar" class="hidden bg-indigo-50 border-b border-indigo-100 px-8 py-4 flex justify-between items-center transition-all duration-300">
+            <span class="text-sm font-bold text-indigo-800"><span id="selected-count">0</span> yazı seçildi</span>
+            <button onclick="document.getElementById('bulkImageModal').classList.remove('hidden')" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-4 py-2 rounded-xl font-bold shadow-sm transition-colors">
+                <i class="fas fa-image mr-1"></i> Toplu Görsel Ata
+            </button>
+        </div>
+
         <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
+            <table class="w-full text-left border-collapse" id="postsTable">
                 <thead>
                     <tr class="bg-slate-50/50 text-slate-400 uppercase text-[10px] font-bold tracking-widest border-b border-slate-100">
+                        <th class="px-6 py-5 w-10 text-center">
+                            <input type="checkbox" id="selectAll" class="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer">
+                        </th>
                         <th class="px-8 py-5">Görsel & Başlık</th>
                         <th class="px-8 py-5 text-center">Durum</th>
                         <th class="px-8 py-5">Kategori</th>
@@ -26,6 +36,9 @@
                 <tbody class="divide-y divide-slate-50">
                     @foreach($posts as $post)
                     <tr class="hover:bg-slate-50/50 transition-colors group">
+                        <td class="px-6 py-5 text-center">
+                            <input type="checkbox" value="{{ $post->id }}" class="post-checkbox w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer">
+                        </td>
                         <td class="px-8 py-5">
                             <div class="flex items-center space-x-4">
                                 <div class="w-20 h-14 rounded-xl overflow-hidden bg-slate-100 border border-slate-200/50 flex-shrink-0 shadow-sm">
@@ -86,5 +99,63 @@
         </div>
         @endif
     </div>
-@endsection/div>
+
+    <!-- Bulk Image Modal -->
+    <div id="bulkImageModal" class="hidden fixed inset-0 bg-slate-900/50 z-[100] flex items-center justify-center backdrop-blur-sm">
+        <div class="bg-white rounded-[32px] shadow-2xl p-8 max-w-md w-full mx-4 border border-slate-200">
+            <div class="flex justify-between items-center mb-2">
+                <h3 class="text-xl font-outfit font-bold text-slate-800">Toplu Görsel Ata</h3>
+                <button onclick="document.getElementById('bulkImageModal').classList.add('hidden')" class="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors"><i class="fas fa-times"></i></button>
+            </div>
+            <p class="text-slate-500 text-sm mb-6">Seçilen <span id="modal-selected-count" class="font-bold text-indigo-600">0</span> yazıya ortak bir görsel yüklenecek.</p>
+            
+            <form action="{{ route('admin.posts.bulk-image') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <input type="hidden" name="post_ids" id="post_ids_input">
+                <div class="mb-6">
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Görsel Seçin</label>
+                    <input type="file" name="bulk_image" required accept="image/*" class="w-full text-sm text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 transition-colors cursor-pointer border border-slate-200 rounded-xl">
+                </div>
+                
+                <div class="flex justify-end gap-3">
+                    <button type="button" onclick="document.getElementById('bulkImageModal').classList.add('hidden')" class="px-5 py-3 text-sm font-bold text-slate-600 hover:bg-slate-100 rounded-xl transition-colors">İptal</button>
+                    <button type="submit" class="px-5 py-3 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold rounded-xl shadow-lg shadow-indigo-200 transition-colors flex items-center">
+                        <i class="fas fa-upload mr-2"></i> Görselleri Ata
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Script for Bulk Checkbox Logic -->
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const selectAll = document.getElementById('selectAll');
+        const checkboxes = document.querySelectorAll('.post-checkbox');
+        const bulkActionBar = document.getElementById('bulk-action-bar');
+        const selectedCount = document.getElementById('selected-count');
+        const modalSelectedCount = document.getElementById('modal-selected-count');
+        const postIdsInput = document.getElementById('post_ids_input');
+
+        function updateSelection() {
+            const selected = Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value);
+            if(selected.length > 0) {
+                bulkActionBar.classList.remove('hidden');
+            } else {
+                bulkActionBar.classList.add('hidden');
+            }
+            selectedCount.textContent = selected.length;
+            modalSelectedCount.textContent = selected.length;
+            postIdsInput.value = JSON.stringify(selected);
+            selectAll.checked = selected.length === checkboxes.length && checkboxes.length > 0;
+        }
+
+        selectAll.addEventListener('change', function() {
+            checkboxes.forEach(cb => cb.checked = selectAll.checked);
+            updateSelection();
+        });
+
+        checkboxes.forEach(cb => cb.addEventListener('change', updateSelection));
+    });
+    </script>
 @endsection

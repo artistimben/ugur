@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="mb-10">
-        <h1 class="text-4xl font-outfit font-extrabold text-slate-900 tracking-tight">Hoş Geldiniz, {{ explode(' ', auth()->user()->name)[0] }} 👋</h1>
+        <h1 class="text-4xl font-outfit font-extrabold text-slate-900 tracking-tight">Hoş Geldiniz, {{ auth()->check() ? explode(' ', auth()->user()->name)[0] : 'Yönetici' }} 👋</h1>
         <p class="text-slate-500 mt-2 text-lg">İşte blogunuzun bugünkü genel görünümü.</p>
     </div>
 

@@ -102,4 +102,31 @@ class PostController extends Controller
         $post->delete();
         return back()->with('success', 'Yazı silindi.');
     }
+
+    public function bulkImage(Request $request)
+    {
+        $request->validate([
+            'post_ids' => 'required|string', // JSON array of IDs
+            'bulk_image' => 'required|image|max:2048'
+        ]);
+
+        $postIds = json_decode($request->post_ids, true);
+        if (!is_array($postIds) || empty($postIds)) {
+            return back()->withErrors(['post_ids' => 'Lütfen en az bir yazı seçin.']);
+        }
+
+        if ($request->hasFile('bulk_image')) {
+            $imagePath = $request->file('bulk_image')->store('posts', 'public');
+            
+            $posts = Post::whereIn('id', $postIds)->get();
+            foreach ($posts as $post) {
+                if ($post->image && !Str::startsWith($post->image, ['http://', 'https://'])) {
+                    Storage::disk('public')->delete($post->image);
+                }
+                $post->update(['image' => $imagePath]);
+            }
+        }
+
+        return redirect()->route('admin.posts.index')->with('success', count($postIds) . ' yazıya görsel başarıyla eklendi.');
+    }
 }

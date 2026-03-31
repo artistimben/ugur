@@ -23,28 +23,99 @@
         <div class="decoration-node" style="bottom: -10%; right: -10%;"></div>
     </div>
 
+    <!-- ─── ANA DRAWER MENÜ (Sol Panel) ──────────────────────── -->
+    <div class="cat-overlay" id="catOverlay" onclick="closeCatDrawer()"></div>
+    <aside class="cat-drawer" id="catDrawer">
+        <div class="cat-drawer-header">
+            <span>Menü</span>
+            <button class="cat-drawer-close" onclick="closeCatDrawer()" aria-label="Kapat">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <nav class="cat-drawer-nav">
+            <!-- Ana Linkler -->
+            <a href="{{ route('home') }}" class="cat-drawer-link {{ request()->routeIs('home') && !request('category') ? 'active' : '' }}">
+                <i class="fas fa-home"></i> <span>Ana Sayfa</span>
+            </a>
+            <a href="{{ route('about') }}" class="cat-drawer-link {{ request()->routeIs('about') ? 'active' : '' }}">
+                <i class="fas fa-user-circle"></i> <span>Hakkımda</span>
+            </a>
+            <a href="{{ route('contact') }}" class="cat-drawer-link {{ request()->routeIs('contact') ? 'active' : '' }}">
+                <i class="fas fa-envelope"></i> <span>İletişim</span>
+            </a>
+            <a href="{{ route('privacy') }}" class="cat-drawer-link {{ request()->routeIs('privacy') ? 'active' : '' }}">
+                <i class="fas fa-shield-alt"></i> <span>Gizlilik</span>
+            </a>
+            <a href="{{ route('post.random') }}" class="cat-drawer-link" style="color: var(--accent-color);">
+                <i class="fas fa-dice"></i> <span>Şanslı Konu</span>
+            </a>
+
+            <div class="drawer-divider"></div>
+            <div class="drawer-section-title">KATEGORİLER</div>
+
+            <a href="{{ route('home') }}" class="cat-drawer-link {{ !request('category') && request()->routeIs('home') ? 'active' : '' }}" onclick="closeCatDrawer()">
+                <i class="fas fa-th-large"></i>
+                <span>Tüm Yazılar</span>
+            </a>
+            @php
+                $drawerIcons = [
+                    'dini-bilgiler'      => 'fa-mosque',
+                    'cocuk-yetistirme'   => 'fa-child',
+                    'aile-iletisimi'     => 'fa-home',
+                    'aile-ve-iliskiler'  => 'fa-users',
+                    'kisisel-gelisim'    => 'fa-seedling',
+                    'manevi-yazilar'     => 'fa-heart',
+                    'psikoloji-ve-saglik'=> 'fa-brain',
+                    'egitim'             => 'fa-graduation-cap',
+                    'teknoloji-ve-toplum'=> 'fa-laptop',
+                    'genel'              => 'fa-book-open',
+                    'genel-yazilar'      => 'fa-newspaper',
+                ];
+            @endphp
+            @foreach(\App\Models\Category::all() as $cat)
+                @php $dIcon = $drawerIcons[$cat->slug] ?? 'fa-book-open'; @endphp
+                <a href="{{ route('home', ['category' => $cat->slug]) }}"
+                   class="cat-drawer-link {{ request('category') == $cat->slug ? 'active' : '' }}"
+                   onclick="closeCatDrawer()">
+                    <i class="fas {{ $dIcon }}"></i>
+                    <span>{{ $cat->name }}</span>
+                </a>
+            @endforeach
+        </nav>
+    </aside>
+    <!-- ──────────────────────────────────────────────────────── -->
+
     <header class="main-header">
-        <div class="container header-container">
+        <div class="container header-container" style="justify-content: space-between;">
+
+            <!-- Sol: Logo -->
             <div class="logo">
-                <a href="{{ route('home') }}" style="display: flex; align-items: center; gap: 16px;">
-                    <img src="{{ asset('images/profile.jpg') }}" alt="Uğur Kantekin" style="width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent-color);">
+                <a href="{{ route('home') }}">
+                    <img src="{{ asset('images/profile.jpg') }}" alt="Uğur Kantekin">
                     UĞUR KANTEKİN
                 </a>
             </div>
-            
-            <nav class="nav-links" id="mainNav">
-                <a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'active' : '' }}">Ana Sayfa</a>
-                <a href="{{ route('about') }}" class="{{ request()->routeIs('about') ? 'active' : '' }}">Hakkımda</a>
-                <a href="{{ route('contact') }}" class="{{ request()->routeIs('contact') ? 'active' : '' }}">İletişim</a>
-                <a href="{{ route('privacy') }}" class="{{ request()->routeIs('privacy') ? 'active' : '' }}">Gizlilik</a>
-                <a href="{{ route('post.random') }}" class="random-post-btn" title="Bugünün Yazısını Keşfet">
-                    <i class="fas fa-dice"></i> <span>Bugünün Şanslı Konusu</span>
-                </a>
-            </nav>
 
-            <div class="mobile-menu-toggle" onclick="toggleMobileMenu()">
-                <i class="fas fa-bars"></i>
+            <!-- Sağ: Nav Linkleri (Masaüstü) -->
+            <div class="header-right">
+                <nav class="nav-links" id="desktopNav">
+                    <a href="{{ route('home') }}" class="{{ request()->routeIs('home') && !request('category') ? 'active' : '' }}">Ana Sayfa</a>
+                    <a href="{{ route('about') }}" class="{{ request()->routeIs('about') ? 'active' : '' }}">Hakkımda</a>
+                    <a href="{{ route('contact') }}" class="{{ request()->routeIs('contact') ? 'active' : '' }}">İletişim</a>
+                    <a href="{{ route('privacy') }}" class="{{ request()->routeIs('privacy') ? 'active' : '' }}">Gizlilik</a>
+                    <a href="javascript:void(0);" onclick="toggleCatDrawer()" class="cat-trigger-link"><i class="fas fa-bars"></i> Kategoriler</a>
+                    
+                    <a href="{{ route('post.random') }}" class="random-post-btn" title="Bugünün Yazısını Keşfet">
+                        <i class="fas fa-dice"></i> <span>BUGÜNÜN ŞANSLI KONUSU</span>
+                    </a>
+                </nav>
+
+                <!-- Mobil Hamburger Menü İkonu -->
+                <button class="mobile-menu-toggle" onclick="toggleCatDrawer()" aria-label="Menü">
+                    <i class="fas fa-bars"></i>
+                </button>
             </div>
+
         </div>
     </header>
 
@@ -57,28 +128,10 @@
     </section>
     @endif
 
-    <!-- Global Category Bar -->
-    <div class="container global-category-bar-wrapper">
-        <div class="sidebar-category-list horizontal">
-            <a href="{{ route('home') }}" class="sidebar-category-link {{ !request('category') ? 'active' : '' }}">
-                <i class="fas fa-th-large"></i> Hepsi
-            </a>
-            @foreach(\App\Models\Category::all() as $cat)
-                @php 
-                    $icons = ['dini-bilgiler' => 'fa-mosque', 'cocuk-yetistirme' => 'fa-child', 'aile-iletisimi' => 'fa-home', 'kisisel-gelisim' => 'fa-seedling', 'manevi-yazilar' => 'fa-heart', 'genel' => 'fa-book-open'];
-                    $icon = $icons[$cat->slug] ?? 'fa-book-open';
-                @endphp
-                <a href="{{ route('home', ['category' => $cat->slug]) }}" class="sidebar-category-link {{ request('category') == $cat->slug ? 'active' : '' }}">
-                    <i class="fas {{ $icon }}"></i> {{ $cat->name }}
-                </a>
-            @endforeach
-        </div>
-    </div>
-
     <!-- Side Gutter Ads -->
     @if(isset($ads))
         @php 
-            $leftAd = $ads->where('position', 'left_gutter')->first();
+            $leftAd  = $ads->where('position', 'left_gutter')->first();
             $rightAd = $ads->where('position', 'right_gutter')->first();
         @endphp
 
@@ -151,10 +204,30 @@
     </footer>
 
     <script>
-        function toggleMobileMenu() {
-            const nav = document.getElementById('mainNav');
-            nav.classList.toggle('mobile-active');
+        /* ── Ana Menü / Kategori Drawer ── */
+        function toggleCatDrawer() {
+            const drawer  = document.getElementById('catDrawer');
+            const overlay = document.getElementById('catOverlay');
+            const isOpen  = drawer.classList.contains('open');
+            if (isOpen) {
+                closeCatDrawer();
+            } else {
+                drawer.classList.add('open');
+                overlay.classList.add('show');
+                document.body.style.overflow = 'hidden';
+            }
         }
+
+        function closeCatDrawer() {
+            document.getElementById('catDrawer').classList.remove('open');
+            document.getElementById('catOverlay').classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        /* ESC ile drawer kapat */
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') { closeCatDrawer(); }
+        });
     </script>
 </body>
 </html>

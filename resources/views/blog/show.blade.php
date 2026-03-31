@@ -14,7 +14,7 @@
         <div class="main-column">
             @if($post->image)
             <div class="single-post-image">
-                <img src="{{ \Illuminate\Support\Str::startsWith($post->image, ['http://', 'https://']) ? $post->image : Storage::url($post->image) }}" alt="{{ $post->title }}" style="width: 100%; height: auto;">
+                <img src="{{ \Illuminate\Support\Str::startsWith($post->image, ['http://', 'https://']) ? $post->image : Storage::url($post->image) }}" alt="{{ $post->title }}" style="width: 100%; height: auto;" onerror="this.parentElement.classList.add('img-error'); this.style.display='none'; this.parentElement.innerHTML += '<div class=\'no-image-placeholder\' style=\'height: 400px;\'><i class=\'fas fa-feather-alt\'></i></div>'">
             </div>
             @endif
 
@@ -81,19 +81,23 @@
     <div class="container" style="margin-bottom: 80px; margin-top: 80px;">
         <div class="widget">
             <h3 class="widget-title">BUNLAR DA İLGİNİZİ ÇEKEBİLİR</h3>
-            <div class="blog-grid" style="padding-top: 40px; grid-template-columns: repeat(3, 1fr);">
+            <div class="blog-grid" style="padding-top: 40px;">
                 @foreach($relatedPosts as $rPost)
                 <article class="post-card">
                     <a href="{{ route('post.show', $rPost->slug) }}" class="post-image">
                         @if($rPost->image)
-                        <img src="{{ \Illuminate\Support\Str::startsWith($rPost->image, ['http://', 'https://']) ? $rPost->image : Storage::url($rPost->image) }}" alt="{{ $rPost->title }}">
+                        <img src="{{ \Illuminate\Support\Str::startsWith($rPost->image, ['http://', 'https://']) ? $rPost->image : Storage::url($rPost->image) }}" alt="{{ $rPost->title }}" loading="lazy" onerror="this.parentElement.classList.add('img-error'); this.style.display='none'; this.parentElement.innerHTML += '<div class=\'no-image-placeholder\'><i class=\'fas fa-feather-alt\'></i></div>'">
+                        @else
+                        <div class="no-image-placeholder"><i class="fas fa-feather-alt"></i></div>
                         @endif
                     </a>
-                    <div class="post-category">{{ $rPost->category ? $rPost->category->name : 'GENEL' }}</div>
-                    <h3 class="post-title" style="font-size: 20px;">
-                        <a href="{{ route('post.show', $rPost->slug) }}">{{ $rPost->title }}</a>
-                    </h3>
-                    <a href="{{ route('post.show', $rPost->slug) }}" class="read-more">Devamını Oku</a>
+                    <div class="post-card-content">
+                        <div class="post-category">{{ $rPost->category ? $rPost->category->name : 'GENEL' }}</div>
+                        <h3 class="post-title">
+                            <a href="{{ route('post.show', $rPost->slug) }}">{{ $rPost->title }}</a>
+                        </h3>
+                        <a href="{{ route('post.show', $rPost->slug) }}" class="read-more">Devamını Oku</a>
+                    </div>
                 </article>
                 @endforeach
             </div>

@@ -15,12 +15,16 @@ Route::get('/yazi/{slug}', [BlogController::class, 'show'])->name('post.show');
 Route::get('/kesfet', [BlogController::class, 'random'])->name('post.random');
 
 // Admin Routes (Protected)
-Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
+Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
+    Route::get('/', function () {
+        return redirect()->route('admin.dashboard');
+    });
     Route::get('/dashboard', function () {
         return view('admin.dashboard');
     })->name('dashboard');
     
     Route::resource('posts', PostController::class);
+    Route::post('posts/bulk-image', [PostController::class, 'bulkImage'])->name('posts.bulk-image');
     Route::resource('categories', CategoryController::class);
     Route::resource('advertisements', \App\Http\Controllers\Admin\AdvertisementController::class);
 });

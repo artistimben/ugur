@@ -171,7 +171,7 @@
                 
                 <div class="flex items-center space-x-6">
                     <div class="hidden sm:flex flex-col items-end">
-                        <span class="text-sm font-bold text-slate-800">{{ auth()->user()->name }}</span>
+                        <span class="text-sm font-bold text-slate-800">{{ auth()->user()->name ?? 'Yönetici' }}</span>
                         <span class="text-[10px] font-bold text-indigo-500 uppercase tracking-tighter">Yönetici</span>
                     </div>
                     <div class="relative group">

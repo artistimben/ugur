@@ -11,12 +11,16 @@ class CategorySeeder extends Seeder
     public function run(): void
     {
         $categories = [
-            'Dini Bilgiler',
-            'Çocuk Yetiştirme',
-            'Aile İletişimi',
+            // Sitedeki ana kategori - tüm yazılar bu kategoride
+            'Genel Yazılar',
+            // Alt kategoriler (içeriğe göre sınıflandırma)
             'Kişisel Gelişim',
+            'Çocuk Yetiştirme',
+            'Aile ve İlişkiler',
+            'Psikoloji ve Sağlık',
+            'Eğitim',
+            'Teknoloji ve Toplum',
             'Manevi Yazılar',
-            'Genel'
         ];
 
         foreach ($categories as $category) {
