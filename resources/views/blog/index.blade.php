@@ -5,31 +5,33 @@
     $currentCategory = request('category') ? \App\Models\Category::where('slug', request('category'))->first() : null;
     $categories = \App\Models\Category::all();
     
-    // Category Specific Customizations
-    $config = [
-        'dini-bilgiler' => ['quote' => '“Gönül, gönül verilerek alınır.”', 'author' => 'Hz. Mevlana', 'accent' => '#1b4332', 'icon' => 'fa-mosque'],
-        'cocuk-yetistirme' => ['quote' => '“Çocuklar her şeyi görürler.”', 'author' => 'Maria Montessori', 'accent' => '#2a6f97', 'icon' => 'fa-child'],
-        'aile-iletisimi' => ['quote' => '“Huzurlu bir aile cennetin yansımasıdır.”', 'author' => 'Anonim', 'accent' => '#bc4749', 'icon' => 'fa-home'],
-        'kisisel-gelisim' => ['quote' => '“Dün olduğun kişiden daha iyi ol.”', 'author' => 'Gelişim Notları', 'accent' => '#4361ee', 'icon' => 'fa-seedling'],
-        'manevi-yazilar' => ['quote' => '“Kalpten çıkan söz kalbe gider.”', 'author' => 'Hz. Ali', 'accent' => '#7209b7', 'icon' => 'fa-heart'],
-        'genel' => ['quote' => '“Bilgi, paylaşıldıkça çoğalan tek hazinedir.”', 'author' => 'Uğur Kantekin', 'accent' => '#c2a35d', 'icon' => 'fa-book-open']
+    $drawerIcons = [
+        'dini-bilgiler'      => 'fa-mosque',
+        'cocuk-yetistirme'   => 'fa-child',
+        'aile-ve-iliskiler'  => 'fa-users',
+        'kisisel-gelisim'    => 'fa-seedling',
+        'manevi-yazilar'     => 'fa-heart',
+        'psikoloji-ve-saglik'=> 'fa-brain',
+        'egitim'             => 'fa-graduation-cap',
+        'teknoloji-ve-toplum'=> 'fa-laptop',
+        'genel-yazilar'      => 'fa-newspaper',
     ];
-
-    $catConfig = ($currentCategory && isset($config[$currentCategory->slug])) ? $config[$currentCategory->slug] : $config['genel'];
+    $catIcon = ($currentCategory && isset($drawerIcons[$currentCategory->slug])) ? $drawerIcons[$currentCategory->slug] : 'fa-book-open';
 @endphp
 
 <div class="container main-wrapper">
     <!-- Center Column -->
     <div class="main-column" style="min-height: 800px;">
-        @if($currentCategory)
-            <div style="margin: 40px 0 60px; padding-bottom: 40px; border-bottom: 1px solid var(--border-color);">
-                <div style="display: flex; align-items: center; gap: 20px; color: {{ $catConfig['accent'] }}; margin-bottom: 16px;">
-                    <i class="fas {{ $catConfig['icon'] }}" style="font-size: 24px;"></i>
-                    <span style="text-transform: uppercase; font-weight: 700; letter-spacing: 3px; font-size: 12px;">{{ $currentCategory->name }}</span>
+        <div style="margin: 40px 0 60px; padding-bottom: 20px; border-bottom: 1px solid var(--border-color);">
+            @if($currentCategory)
+                <div style="display: flex; align-items: center; gap: 15px; color: var(--accent-color); margin-bottom: 10px;">
+                    <i class="fas {{ $catIcon }}" style="font-size: 20px;"></i>
+                    <span style="text-transform: uppercase; font-weight: 700; letter-spacing: 2px; font-size: 11px;">{{ $currentCategory->name }}</span>
                 </div>
-                <h1 style="font-size: 48px; margin-bottom: 16px;">{{ $currentCategory->name }} Üzerine Seçkiler</h1>
-            </div>
-        @endif
+            @endif
+            <h1 style="font-size: 36px; margin-bottom: 10px;">{{ $currentCategory ? $currentCategory->name : 'Yazılarım' }}</h1>
+            <p style="color: #666;">Hayata, insana ve maneviyata dair derinlemesine okumalar.</p>
+        </div>
 
         <div class="blog-grid">
             @foreach($posts as $post)
@@ -85,11 +87,7 @@
         </div>
         @endif
 
-        <div style="margin-top: 100px; padding: 100px 60px; background: {{ $catConfig['accent'] }}; color: white; border-radius: 4px; text-align: center; position: relative; overflow: hidden;">
-            <i class="fas fa-quote-left" style="position: absolute; top: 40px; left: 40px; font-size: 80px; opacity: 0.1;"></i>
-            <p style="font-family: var(--font-heading); font-size: 28px; font-style: italic; margin-bottom: 32px; position: relative;">{{ $catConfig['quote'] }}</p>
-            <span style="font-size: 14px; text-transform: uppercase; letter-spacing: 4px; opacity: 0.8;">— {{ $catConfig['author'] }}</span>
-        </div>
+        <!-- Quote section removed -->
     </div>
 
     <!-- Sidebar Column for Ads -->

@@ -51,7 +51,7 @@
             </a>
 
             <div class="drawer-divider"></div>
-            <div class="drawer-section-title">KATEGORİLER</div>
+            <!-- Categories removed from here -->
 
             <a href="{{ route('home') }}" class="cat-drawer-link {{ !request('category') && request()->routeIs('home') ? 'active' : '' }}" onclick="closeCatDrawer()">
                 <i class="fas fa-th-large"></i>
@@ -119,14 +119,7 @@
         </div>
     </header>
 
-    @if(request()->routeIs('home') && !request('category'))
-    <section class="hero-section">
-        <div class="container hero-content">
-            <h1>Huzur Kalpte Başlar</h1>
-            <p>Hayata, insana ve maneviyata dair derinlemesine okumalar.</p>
-        </div>
-    </section>
-    @endif
+    <!-- Hero section removed -->
 
     <!-- Side Gutter Ads -->
     @if(isset($ads))

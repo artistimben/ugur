@@ -10,7 +10,7 @@
             </div>
         </header>
 
-        <div class="single-post-image" style="max-width: 900px; margin-left: auto; margin-right: auto; box-shadow: var(--shadow-md);">
+        <div class="single-post-image" style="max-width: 350px; margin-left: auto; margin-right: auto; box-shadow: var(--shadow-md); border-radius: 8px; overflow: hidden; border: 1px solid var(--border-color);">
             @php
                 $aboutImg = $page->image;
                 if ($aboutImg && !\Illuminate\Support\Str::startsWith($aboutImg, ['http://', 'https://', 'images/'])) {
@@ -23,8 +23,6 @@
         <div class="single-post-content" style="max-width: 800px; margin-top: 60px;">
             {!! $page->content !!}
         </div>
-    </article>
-</div>
     </article>
 </div>
 @endsection
