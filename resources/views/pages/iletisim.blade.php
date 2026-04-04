@@ -16,8 +16,6 @@
 
 .contact-header h1 {
     font-family: var(--font-heading);
-    font-size: 46px;
-    color: var(--primary-color);
     margin-bottom: 20px;
     font-weight: 700;
 }
@@ -267,7 +265,7 @@
 
 <div class="contact-page-wrapper">
     <div class="contact-header">
-        <h1>Birlikte İlerleyelim</h1>
+        <h1 class="page-title">Birlikte İlerleyelim</h1>
         <p>Görüş, öneri ve düşüncelerinizi dinlemekten mutluluk duyarım. İster aşağıdaki formu doldurun, ister doğrudan iletişim kanallarımdan bana ulaşın. En kısa sürede geri dönüş yapacağım.</p>
     </div>
 

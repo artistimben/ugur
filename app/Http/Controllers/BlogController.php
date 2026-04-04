@@ -27,9 +27,35 @@ class BlogController extends Controller
 
         return view('blog.index', compact('posts', 'ads'));
     }
-    public function show($slug)
+    public function show(Request $request, $slug)
     {
         $post = \App\Models\Post::where('slug', $slug)->where('is_published', true)->firstOrFail();
+        
+        // Tıklanma sayısını artır (Listeden geliyorsa)
+        if ($request->has('ref') && $request->ref == 'list') {
+            $post->increment('clicks');
+        }
+
+        // Okunma sayısını artır
+        $post->increment('views');
+
+        // Tekil okunma kontrolü
+        $alreadyViewed = \App\Models\PostView::where('post_id', $post->id)
+            ->where('ip_address', $request->ip())
+            ->exists();
+
+        if (!$alreadyViewed) {
+            $post->increment('unique_views');
+        }
+
+        // Okunma günlüğünü kaydet
+        \App\Models\PostView::create([
+            'post_id' => $post->id,
+            'user_id' => auth()->id(),
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->userAgent(),
+        ]);
+
         $ads = \App\Models\Advertisement::where('is_active', true)->get();
         $relatedPosts = \App\Models\Post::where('category_id', $post->category_id)
             ->where('id', '!=', $post->id)

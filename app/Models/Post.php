@@ -6,10 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Post extends Model
 {
-    protected $fillable = ['category_id', 'title', 'slug', 'image', 'excerpt', 'content', 'is_published'];
+    protected $fillable = ['id', 'category_id', 'title', 'slug', 'image', 'excerpt', 'content', 'is_published', 'views', 'clicks', 'unique_views'];
 
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function post_views()
+    {
+        return $this->hasMany(PostView::class);
     }
 }

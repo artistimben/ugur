@@ -1,10 +1,14 @@
 @extends('layouts.app')
 
 @section('content')
+<style>
+    body { overflow-x: hidden; }
+    .h2-heading { font-family: var(--font-heading); font-size: 28px; margin-bottom: 24px; color: var(--primary-color); }
+</style>
 <div class="container">
     <article class="single-post">
         <header class="single-post-header">
-            <h1 style="font-size: 56px; margin-bottom: 24px;">Gizlilik Politikası</h1>
+            <h1 class="page-title">Gizlilik Politikası</h1>
             <div class="single-post-meta">
                 <span>Son Güncelleme: {{ date('d F Y') }}</span>
             </div>

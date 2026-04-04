@@ -17,11 +17,6 @@
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 </head>
 <body data-category="{{ request('category', 'genel') }}">
-    <!-- Atmospheric Background Layers -->
-    <div class="category-decoration">
-        <div class="decoration-node" style="top: -10%; left: -10%;"></div>
-        <div class="decoration-node" style="bottom: -10%; right: -10%;"></div>
-    </div>
 
     <!-- ─── ANA DRAWER MENÜ (Sol Panel) ──────────────────────── -->
     <div class="cat-overlay" id="catOverlay" onclick="closeCatDrawer()"></div>
@@ -86,43 +81,39 @@
     <!-- ──────────────────────────────────────────────────────── -->
 
     <header class="main-header">
-        <div class="container header-container" style="justify-content: space-between;">
-
-            <!-- Sol: Logo -->
+        <div class="container header-container">
             <div class="logo">
                 <a href="{{ route('home') }}">
-                    <img src="{{ asset('images/profile.jpg') }}" alt="Uğur Kantekin">
-                    UĞUR KANTEKİN
+                    <img src="https://www.ugurkantekin.com.tr/uploads/settings/ugur-kantekin-logo.png" alt="Uğur Kantekin" onerror="this.src='{{ asset('images/profile.jpg') }}'">
+                    <span>UĞUR KANTEKİN</span>
                 </a>
             </div>
 
-            <!-- Sağ: Nav Linkleri (Masaüstü) -->
-            <div class="header-right">
-                <nav class="nav-links" id="desktopNav">
-                    <a href="{{ route('home') }}" class="{{ request()->routeIs('home') && !request('category') ? 'active' : '' }}">Ana Sayfa</a>
-                    <a href="{{ route('about') }}" class="{{ request()->routeIs('about') ? 'active' : '' }}">Hakkımda</a>
-                    <a href="{{ route('contact') }}" class="{{ request()->routeIs('contact') ? 'active' : '' }}">İletişim</a>
-                    <a href="{{ route('privacy') }}" class="{{ request()->routeIs('privacy') ? 'active' : '' }}">Gizlilik</a>
-                    <a href="javascript:void(0);" onclick="toggleCatDrawer()" class="cat-trigger-link"><i class="fas fa-bars"></i> Kategoriler</a>
-                    
-                    <a href="{{ route('post.random') }}" class="random-post-btn" title="Bugünün Yazısını Keşfet">
-                        <i class="fas fa-dice"></i> <span>BUGÜNÜN ŞANSLI KONUSU</span>
-                    </a>
-                </nav>
+            <nav class="nav-links">
+                <a href="{{ route('home') }}" class="{{ request()->routeIs('home') && !request('category') ? 'active' : '' }}">ANA SAYFA</a>
+                <a href="{{ route('about') }}" class="{{ request()->routeIs('about') ? 'active' : '' }}">HAKKIMDA</a>
+                <a href="{{ route('contact') }}" class="{{ request()->routeIs('contact') ? 'active' : '' }}">İLETİŞİM</a>
+                <a href="{{ route('privacy') }}" class="{{ request()->routeIs('privacy') ? 'active' : '' }}">GİZLİLİK</a>
+                <a href="javascript:void(0)" onclick="toggleCatDrawer()" class="cat-trigger-link">
+                    <i class="fas fa-bars"></i> KATEGORİLER
+                </a>
+            </nav>
 
-                <!-- Mobil Hamburger Menü İkonu -->
+            <div class="header-right">
+                <a href="{{ route('post.random') }}" class="random-post-btn">
+                    <i class="fas fa-ticket-alt"></i> BUGÜNÜN ŞANSLI KONUSU
+                </a>
                 <button class="mobile-menu-toggle" onclick="toggleCatDrawer()" aria-label="Menü">
                     <i class="fas fa-bars"></i>
                 </button>
             </div>
-
         </div>
     </header>
 
-    @if(request()->routeIs('home') && !request('category'))
+    @if(request()->routeIs('home'))
     <section class="hero-section">
         <div class="container hero-content">
-            <h1>Huzur Kalpte Başlar</h1>
+            <h1>{{ request('category') ? \App\Models\Category::where('slug', request('category'))->first()->name : 'Yazılarım' }}</h1>
             <p>Hayata, insana ve maneviyata dair derinlemesine okumalar.</p>
         </div>
     </section>

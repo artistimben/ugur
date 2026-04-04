@@ -10,8 +10,8 @@
         </div>
     </header>
 
-    <div class="container main-wrapper" style="min-height: 600px;">
-        <div class="main-column">
+    <div class="container">
+        <div class="main-column" style="max-width: 900px; margin: 0 auto;">
             @if($post->image)
             @php
                 $imagePath = $post->image;
@@ -47,58 +47,14 @@
                     </a>
                 </div>
             </div>
-
-            @if($ads->where('position', 'post_bottom')->first())
-                @php 
-                    $ad = $ads->where('position', 'post_bottom')->first(); 
-                    $adImage = $ad->image;
-                    if ($adImage && !\Illuminate\Support\Str::startsWith($adImage, ['http://', 'https://', 'images/'])) {
-                        $adImage = 'storage/' . $adImage;
-                    }
-                @endphp
-                <div class="ad-container" style="margin: 60px auto; max-width: 800px; text-align: center; background: var(--section-bg); padding: 30px; border-radius: 4px;">
-                    <span style="font-size: 10px; color: #999; text-transform: uppercase; letter-spacing: 2px; display: block; margin-bottom: 10px;">Reklam</span>
-                    @if($ad->type == 'script')
-                        {!! $ad->script_code !!}
-                    @else
-                        <a href="{{ $ad->link }}" target="_blank">
-                            <img src="{{ \Illuminate\Support\Str::startsWith($ad->image, ['http://', 'https://']) ? $ad->image : asset($adImage) }}" style="max-width: 100%; height: auto; border-radius: 4px;" onerror="this.parentElement.parentElement.style.display='none'">
-                        </a>
-                    @endif
-                </div>
-            @endif
         </div>
-
-        <!-- Sidebar Column for Ads -->
-        @if($ads->where('position', 'sidebar')->count() > 0)
-        <aside class="sidebar-column" style="width: 320px; display: flex; flex-direction: column; gap: 40px; flex-shrink: 0;">
-            @foreach($ads->where('position', 'sidebar') as $ad)
-                @php
-                    $sideAdImage = $ad->image;
-                    if ($sideAdImage && !\Illuminate\Support\Str::startsWith($sideAdImage, ['http://', 'https://', 'images/'])) {
-                        $sideAdImage = 'storage/' . $sideAdImage;
-                    }
-                @endphp
-                <div class="sidebar-ad-widget" style="background: white; padding: 20px; border-radius: 4px; border: 1px solid var(--border-color);">
-                    <span style="font-size: 10px; color: #999; text-transform: uppercase; letter-spacing: 2px; display: block; margin-bottom: 15px;">Reklam</span>
-                    @if($ad->type == 'script')
-                        {!! $ad->script_code !!}
-                    @else
-                        <a href="{{ $ad->link }}" target="_blank">
-                            <img src="{{ \Illuminate\Support\Str::startsWith($ad->image, ['http://', 'https://']) ? $ad->image : asset($sideAdImage) }}" style="width: 100%; border-radius: 4px;">
-                        </a>
-                    @endif
-                </div>
-            @endforeach
-        </aside>
-        @endif
     </div>
 </article>
 
 @if(isset($relatedPosts) && $relatedPosts->count() > 0)
     <div class="container" style="margin-bottom: 80px; margin-top: 80px;">
         <div class="widget">
-            <h3 class="widget-title">BUNLAR DA İLGİNİZİ ÇEKEBİLİR</h3>
+            <h3 class="widget-title" style="text-align: center; font-family: var(--font-heading); margin-bottom: 40px;">BUNLAR DA İLGİNİZİ ÇEKEBİLİR</h3>
             <div class="blog-grid" style="padding-top: 40px;">
                 @foreach($relatedPosts as $rPost)
                 <article class="post-card">
@@ -108,7 +64,7 @@
                             $rImagePath = 'storage/' . $rImagePath;
                         }
                     @endphp
-                    <a href="{{ route('post.show', $rPost->slug) }}" class="post-image">
+                    <a href="{{ route('post.show', $rPost->slug) }}?ref=list" class="post-image" style="margin-bottom: 20px;">
                         @if($rPost->image)
                         <img src="{{ \Illuminate\Support\Str::startsWith($rPost->image, ['http://', 'https://']) ? $rPost->image : asset($rImagePath) }}" alt="{{ $rPost->title }}" loading="lazy" onerror="this.onerror=null; this.parentElement.classList.add('img-error'); this.outerHTML = '<div class=\'no-image-placeholder\'><i class=\'fas fa-feather-alt\'></i></div>';">
                         @else
@@ -117,10 +73,10 @@
                     </a>
                     <div class="post-card-content">
                         <div class="post-category">{{ $rPost->category ? $rPost->category->name : 'GENEL' }}</div>
-                        <h3 class="post-title">
-                            <a href="{{ route('post.show', $rPost->slug) }}">{{ $rPost->title }}</a>
+                        <h3 class="post-title" style="font-size: 18px;">
+                            <a href="{{ route('post.show', $rPost->slug) }}?ref=list">{{ $rPost->title }}</a>
                         </h3>
-                        <a href="{{ route('post.show', $rPost->slug) }}" class="read-more">Devamını Oku</a>
+                        <a href="{{ route('post.show', $rPost->slug) }}?ref=list" class="read-more">OKUMAYA DEVAM ET</a>
                     </div>
                 </article>
                 @endforeach

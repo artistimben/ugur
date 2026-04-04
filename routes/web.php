@@ -12,6 +12,67 @@ Route::get('/hakkimda', [BlogController::class, 'about'])->name('about');
 Route::get('/iletisim', [BlogController::class, 'contact'])->name('contact');
 Route::get('/gizlilik-politikasi', [BlogController::class, 'privacy'])->name('privacy');
 Route::get('/yazi/{slug}', [BlogController::class, 'show'])->name('post.show');
+
+Route::get('/import-legacy-posts', function() {
+    try {
+        $xmlPath = base_path('ugurkantekin.xml');
+        if (!file_exists($xmlPath)) return "XML not found at $xmlPath";
+        
+        $xmlString = file_get_contents($xmlPath);
+        $xmlString = str_replace('&nbsp;', ' ', $xmlString);
+        $xmlString = str_replace('&amp;nbsp;', ' ', $xmlString);
+        
+        $xml = simplexml_load_string($xmlString, 'SimpleXMLElement', LIBXML_NOCDATA | LIBXML_RECOVER | LIBXML_NOERROR | LIBXML_NOWARNING | LIBXML_PARSEHUGE);
+        
+        if (!$xml) return "XML could not be loaded even with recovery.";
+        
+        // Clear existing posts
+        \App\Models\Post::query()->delete();
+        
+        $importedCount = 0;
+        foreach ($xml->item as $item) {
+            $id = (string) $item->ID;
+            $title = (string) $item->post_title;
+            // Decode HTML entities
+            $title = html_entity_decode($title, ENT_QUOTES | ENT_XML1, 'UTF-8');
+            
+            $content = (string) $item->post_content;
+            $content = html_entity_decode($content, ENT_QUOTES | ENT_XML1, 'UTF-8');
+            $content = preg_replace('/<!-- \/?wp:[^>]+ -->/i', '', $content);
+            $content = trim($content);
+            
+            $categoryName = (string) $item->post_category ?: 'Genel';
+            $categoryName = html_entity_decode($categoryName, ENT_QUOTES | ENT_XML1, 'UTF-8');
+            
+            $excerpt = (string) $item->post_excerpt ?: \Illuminate\Support\Str::limit(strip_tags($content), 150);
+            $excerpt = html_entity_decode($excerpt, ENT_QUOTES | ENT_XML1, 'UTF-8');
+            
+            $image = (string) $item->featured_image;
+            $date = (string) $item->post_date;
+            
+            $category = \App\Models\Category::firstOrCreate(['name' => $categoryName], [
+                'slug' => \Illuminate\Support\Str::slug($categoryName)
+            ]);
+            
+            \App\Models\Post::create([
+                'id' => $id,
+                'title' => $title,
+                'slug' => \Illuminate\Support\Str::slug($title) . '-' . $id,
+                'content' => $content,
+                'excerpt' => $excerpt,
+                'category_id' => $category->id,
+                'image' => $image,
+                'is_published' => true,
+                'created_at' => $date,
+                'updated_at' => $date,
+            ]);
+            $importedCount++;
+        }
+        return "Imported $importedCount legacy posts successfully.";
+    } catch (\Exception $e) {
+        return "Error: " . $e->getMessage();
+    }
+});
 Route::get('/kesfet', [BlogController::class, 'random'])->name('post.random');
 
 // Admin Routes (Protected)
@@ -28,6 +89,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::resource('categories', CategoryController::class);
     Route::resource('advertisements', \App\Http\Controllers\Admin\AdvertisementController::class);
     Route::resource('pages', \App\Http\Controllers\Admin\PageController::class);
+    Route::get('/run-migrations', function() {
+        \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+        return "Migrations ran successfully:<br><pre>" . \Illuminate\Support\Facades\Artisan::output() . "</pre>";
+    })->name('run-migrations');
 });
 
 // Profile Routes (from Breeze)

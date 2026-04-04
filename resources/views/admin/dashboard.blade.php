@@ -71,6 +71,54 @@
                 <i class="fas fa-layer-group"></i>
             </div>
         </div>
+
+        <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200/60 hover:shadow-xl hover:shadow-cyan-500/5 transition-all group overflow-hidden relative">
+            <div class="relative z-10 flex items-center justify-between mb-4">
+                <div class="w-12 h-12 bg-cyan-50 text-cyan-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <i class="fas fa-eye text-xl"></i>
+                </div>
+                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Okunma</span>
+            </div>
+            <div class="relative z-10">
+                <div class="text-4xl font-outfit font-extrabold text-slate-900 leading-none">{{ \App\Models\Post::sum('views') }}</div>
+                <div class="text-xs text-slate-400 mt-2 font-medium">Toplam sayfa görüntülenme</div>
+            </div>
+            <div class="absolute -right-4 -bottom-4 text-cyan-500/5 text-8xl group-hover:scale-125 transition-transform">
+                <i class="fas fa-eye"></i>
+            </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200/60 hover:shadow-xl hover:shadow-rose-500/5 transition-all group overflow-hidden relative">
+            <div class="relative z-10 flex items-center justify-between mb-4">
+                <div class="w-12 h-12 bg-rose-50 text-rose-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <i class="fas fa-mouse-pointer text-xl"></i>
+                </div>
+                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Tıklanma</span>
+            </div>
+            <div class="relative z-10">
+                <div class="text-4xl font-outfit font-extrabold text-slate-900 leading-none">{{ \App\Models\Post::sum('clicks') }}</div>
+                <div class="text-xs text-slate-400 mt-2 font-medium">Toplam bağlantı tıklama</div>
+            </div>
+            <div class="absolute -right-4 -bottom-4 text-rose-500/5 text-8xl group-hover:scale-125 transition-transform">
+                <i class="fas fa-mouse-pointer"></i>
+            </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-200/60 hover:shadow-xl hover:shadow-blue-500/5 transition-all group overflow-hidden relative">
+            <div class="relative z-10 flex items-center justify-between mb-4">
+                <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <i class="fas fa-users text-xl"></i>
+                </div>
+                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Okuyucu</span>
+            </div>
+            <div class="relative z-10">
+                <div class="text-4xl font-outfit font-extrabold text-slate-900 leading-none">{{ \App\Models\Post::sum('unique_views') }}</div>
+                <div class="text-xs text-slate-400 mt-2 font-medium">Tekil ziyaretçi sayısı</div>
+            </div>
+            <div class="absolute -right-4 -bottom-4 text-blue-500/5 text-8xl group-hover:scale-125 transition-transform">
+                <i class="fas fa-users"></i>
+            </div>
+        </div>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
@@ -119,6 +167,53 @@
                             <p class="text-slate-400 font-medium">Henüz bir yazı eklenmemiş.</p>
                         </div>
                     @endforelse
+                </div>
+            </div>
+
+            <!-- Detailed Reading Log -->
+            <div class="mt-10 bg-white rounded-[32px] shadow-sm border border-slate-200/60 overflow-hidden">
+                <div class="px-8 py-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                    <h3 class="font-outfit font-bold text-slate-800 text-lg tracking-tight">Kim Ne Okudu?</h3>
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Son 10 Okuma</span>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-50/50 text-slate-400 uppercase text-[10px] font-bold tracking-widest border-b border-slate-100">
+                                <th class="px-8 py-4">Yazı</th>
+                                <th class="px-8 py-4">Okuyan</th>
+                                <th class="px-8 py-4">IP Adresi</th>
+                                <th class="px-8 py-4">Zaman</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-50">
+                            @forelse(\App\Models\PostView::with(['post', 'user'])->latest()->take(10)->get() as $view)
+                                <tr class="hover:bg-slate-50/50 transition-colors">
+                                    <td class="px-8 py-4">
+                                        <div class="font-bold text-slate-800 text-sm truncate max-w-[200px]">{{ optional($view->post)->title ?? 'Silinmiş Yazı' }}</div>
+                                    </td>
+                                    <td class="px-8 py-4">
+                                        <div class="flex items-center">
+                                            <div class="w-7 h-7 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-[10px] font-bold mr-2">
+                                                {{ $view->user ? strtoupper(substr($view->user->name, 0, 1)) : 'M' }}
+                                            </div>
+                                            <span class="text-sm font-medium text-slate-600">{{ $view->user ? $view->user->name : 'Misafir Okuyucu' }}</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-8 py-4">
+                                        <code class="text-[10px] bg-slate-100 px-2 py-1 rounded text-slate-500 font-mono">{{ $view->ip_address }}</code>
+                                    </td>
+                                    <td class="px-8 py-4 text-xs text-slate-400">
+                                        {{ $view->created_at->diffForHumans() }}
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="4" class="px-8 py-10 text-center text-slate-400 text-sm">Henüz veri bulunmuyor.</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

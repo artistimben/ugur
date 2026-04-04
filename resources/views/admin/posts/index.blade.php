@@ -30,6 +30,9 @@
                         <th class="px-8 py-5 text-center">Durum</th>
                         <th class="px-8 py-5">Kategori</th>
                         <th class="px-8 py-5">Oluşturulma</th>
+                        <th class="px-8 py-5 text-center">Okunma</th>
+                        <th class="px-8 py-5 text-center">Tıklanma</th>
+                        <th class="px-8 py-5 text-center">Okuyucu</th>
                         <th class="px-8 py-5 text-right">İşlemler</th>
                     </tr>
                 </thead>
@@ -69,6 +72,21 @@
                         <td class="px-8 py-5">
                             <div class="text-xs font-bold text-slate-800">{{ $post->created_at->translatedFormat('d M Y') }}</div>
                             <div class="text-[10px] text-slate-400 mt-0.5">{{ $post->created_at->format('H:i') }}</div>
+                        </td>
+                        <td class="px-8 py-5 text-center">
+                            <span class="bg-indigo-50 text-indigo-600 px-3 py-1 rounded-full text-xs font-bold border border-indigo-100 italic" title="Toplam Görüntülenme">
+                                <i class="fas fa-eye mr-1 text-[10px]"></i> {{ number_format($post->views) }}
+                            </span>
+                        </td>
+                        <td class="px-8 py-5 text-center">
+                            <span class="bg-rose-50 text-rose-600 px-3 py-1 rounded-full text-xs font-bold border border-rose-100" title="Toplam Tıklanma">
+                                <i class="fas fa-mouse-pointer mr-1 text-[10px]"></i> {{ number_format($post->clicks) }}
+                            </span>
+                        </td>
+                        <td class="px-8 py-5 text-center">
+                            <span class="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-xs font-bold border border-blue-100" title="Tekil Okuyucu">
+                                <i class="fas fa-users mr-1 text-[10px]"></i> {{ number_format($post->unique_views) }}
+                            </span>
                         </td>
                         <td class="px-8 py-5 text-right">
                             <div class="flex justify-end items-center space-x-2">
