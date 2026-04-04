@@ -78,8 +78,8 @@ Route::get('/kesfet', [BlogController::class, 'random'])->name('post.random');
 // Setup Routes (TEMPORARY - Unprotected for initial server setup)
 Route::prefix('setup')->group(function () {
     Route::get('/run-migrations', function() {
-        \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
-        return "Migrations ran successfully:<br><pre>" . \Illuminate\Support\Facades\Artisan::output() . "</pre>";
+        \Illuminate\Support\Facades\Artisan::call('migrate:fresh', ['--force' => true]);
+        return "Migrations ran successfuly (FRESH):<br><pre>" . \Illuminate\Support\Facades\Artisan::output() . "</pre>";
     })->name('run-migrations');
     
     Route::get('/run-seeders', function() {
