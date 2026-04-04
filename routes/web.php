@@ -93,6 +93,11 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
         \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
         return "Migrations ran successfully:<br><pre>" . \Illuminate\Support\Facades\Artisan::output() . "</pre>";
     })->name('run-migrations');
+    
+    Route::get('/run-seeders', function() {
+        \Illuminate\Support\Facades\Artisan::call('db:seed', ['--force' => true]);
+        return "Seeders ran successfully:<br><pre>" . \Illuminate\Support\Facades\Artisan::output() . "</pre>";
+    })->name('run-seeders');
 });
 
 // Profile Routes (from Breeze)
