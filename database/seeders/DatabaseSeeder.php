@@ -15,6 +15,13 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // Temiz bir başlangıç için eski verileri siliyoruz
+        \Illuminate\Support\Facades\Schema::disableForeignKeyConstraints();
+        \App\Models\Post::truncate();
+        \App\Models\Category::truncate();
+        \App\Models\Page::truncate();
+        \Illuminate\Support\Facades\Schema::enableForeignKeyConstraints();
+
         $this->call([
             AdminUserSeeder::class,
             CategorySeeder::class,
