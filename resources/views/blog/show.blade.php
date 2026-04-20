@@ -20,7 +20,7 @@
                 }
             @endphp
             <div class="single-post-image">
-                <img src="{{ \Illuminate\Support\Str::startsWith($post->image, ['http://', 'https://']) ? $post->image : asset($imagePath) }}" alt="{{ $post->title }}" style="width: 100%; height: auto;" onerror="this.onerror=null; this.parentElement.classList.add('img-error'); this.outerHTML = '<div class=\'no-image-placeholder\' style=\'height: 400px;\'><i class=\'fas fa-feather-alt\'></i></div>';">
+                <img src="{{ \Illuminate\Support\Str::startsWith($post->image, ['http://', 'https://', '/wp-content']) ? $post->image : asset($imagePath) }}" alt="{{ $post->title }}" style="width: 100%; height: auto;" onerror="this.onerror=null; this.parentElement.classList.add('img-error'); this.outerHTML = '<div class=\'no-image-placeholder\' style=\'height: 400px;\'><i class=\'fas fa-feather-alt\'></i></div>';">
             </div>
             @endif
 
@@ -66,7 +66,7 @@
                     @endphp
                     <a href="{{ route('post.show', $rPost->slug) }}?ref=list" class="post-image" style="margin-bottom: 20px;">
                         @if($rPost->image)
-                        <img src="{{ \Illuminate\Support\Str::startsWith($rPost->image, ['http://', 'https://']) ? $rPost->image : asset($rImagePath) }}" alt="{{ $rPost->title }}" loading="lazy" onerror="this.onerror=null; this.parentElement.classList.add('img-error'); this.outerHTML = '<div class=\'no-image-placeholder\'><i class=\'fas fa-feather-alt\'></i></div>';">
+                        <img src="{{ \Illuminate\Support\Str::startsWith($rPost->image, ['http://', 'https://', '/wp-content']) ? $rPost->image : asset($rImagePath) }}" alt="{{ $rPost->title }}" loading="lazy" onerror="this.onerror=null; this.parentElement.classList.add('img-error'); this.outerHTML = '<div class=\'no-image-placeholder\'><i class=\'fas fa-feather-alt\'></i></div>';">
                         @else
                         <div class="no-image-placeholder"><i class="fas fa-feather-alt"></i></div>
                         @endif

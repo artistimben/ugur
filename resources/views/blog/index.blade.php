@@ -15,7 +15,7 @@
                     @endphp
                     <a href="{{ route('post.show', $post->slug) }}?ref=list" class="post-image">
                         @if($post->image)
-                            <img src="{{ \Illuminate\Support\Str::startsWith($post->image, ['http://', 'https://']) ? $post->image : asset($imagePath) }}" alt="{{ $post->title }}" loading="lazy" onerror="this.onerror=null; this.parentElement.classList.add('img-error'); this.outerHTML = '<div class=\'no-image-placeholder\'><i class=\'fas fa-feather-alt\'></i></div>';">
+                            <img src="{{ \Illuminate\Support\Str::startsWith($post->image, ['http://', 'https://', '/wp-content']) ? $post->image : asset($imagePath) }}" alt="{{ $post->title }}" loading="lazy" onerror="this.onerror=null; this.parentElement.classList.add('img-error'); this.outerHTML = '<div class=\'no-image-placeholder\'><i class=\'fas fa-feather-alt\'></i></div>';">
                         @else
                             <div class="no-image-placeholder">
                                 <i class="fas fa-feather-alt"></i>
