@@ -68,7 +68,7 @@ class BlogController extends Controller
 
     public function about()
     {
-        $page = \App\Models\Page::where('slug', 'hakkimda')->firstOrFail();
+        $page = \App\Models\Page::whereIn('slug', ['hakkimda', 'hakkimda-ugur-kantekin'])->firstOrFail();
         $ads = \App\Models\Advertisement::where('is_active', true)->get();
         return view('pages.hakkimda', compact('page', 'ads'));
     }
