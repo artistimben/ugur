@@ -16,9 +16,11 @@ class BlogController extends Controller
             });
         }
 
-        if ($request->has('q')) {
-            $query->where('title', 'LIKE', '%' . $request->q . '%')
+        if ($request->filled('q')) {
+            $query->where(function($q) use ($request) {
+                $q->where('title', 'LIKE', '%' . $request->q . '%')
                   ->orWhere('content', 'LIKE', '%' . $request->q . '%');
+            });
         }
 
         $posts = $query->latest()->paginate(12);

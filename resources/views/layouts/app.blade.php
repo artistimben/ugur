@@ -28,6 +28,15 @@
             </button>
         </div>
         <nav class="cat-drawer-nav">
+            <div class="drawer-search">
+                <form action="{{ route('home') }}" method="GET">
+                    @if(request('category'))
+                        <input type="hidden" name="category" value="{{ request('category') }}">
+                    @endif
+                    <input type="text" name="q" placeholder="Yazılarda ara..." value="{{ request('q') }}">
+                    <button type="submit" aria-label="Ara"><i class="fas fa-search"></i></button>
+                </form>
+            </div>
             <!-- Ana Linkler -->
             <a href="{{ route('home') }}" class="cat-drawer-link {{ request()->routeIs('home') && !request('category') ? 'active' : '' }}">
                 <i class="fas fa-home"></i> <span>Ana Sayfa</span>
@@ -100,6 +109,9 @@
             </nav>
 
             <div class="header-right">
+                <button class="header-search-toggle" onclick="openSearchOverlay()" aria-label="Arama Aç">
+                    <i class="fas fa-search"></i>
+                </button>
                 <a href="{{ route('post.random') }}" class="random-post-btn">
                     <i class="fas fa-ticket-alt"></i> BUGÜNÜN ŞANSLI KONUSU
                 </a>
@@ -115,6 +127,24 @@
         <div class="container hero-content">
             <h1>{{ request('category') ? \App\Models\Category::where('slug', request('category'))->first()->name : 'Yazılarım' }}</h1>
             <p>Hayata, insana ve maneviyata dair derinlemesine okumalar.</p>
+            
+            <div class="hero-search-wrapper">
+                <form action="{{ route('home') }}" method="GET" class="hero-search-form">
+                    @if(request('category'))
+                        <input type="hidden" name="category" value="{{ request('category') }}">
+                    @endif
+                    <div class="hero-search-input-group">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" name="q" placeholder="Yazılarda başlık veya içerik ara..." value="{{ request('q') }}" autocomplete="off">
+                        @if(request('q'))
+                            <a href="{{ route('home', request()->except('q')) }}" class="hero-clear-search" title="Aramayı Temizle">
+                                <i class="fas fa-times"></i>
+                            </a>
+                        @endif
+                        <button type="submit" class="hero-search-submit">ARA</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </section>
     @endif
@@ -215,10 +245,50 @@
             document.body.style.overflow = '';
         }
 
-        /* ESC ile drawer kapat */
+        /* ── Arama Overlay Fonksiyonları ── */
+        function openSearchOverlay() {
+            const overlay = document.getElementById('searchOverlay');
+            const input = document.getElementById('searchOverlayInput');
+            overlay.classList.add('open');
+            document.body.style.overflow = 'hidden';
+            setTimeout(() => {
+                input.focus();
+            }, 100);
+        }
+
+        function closeSearchOverlay() {
+            document.getElementById('searchOverlay').classList.remove('open');
+            if (!document.getElementById('catDrawer').classList.contains('open')) {
+                document.body.style.overflow = '';
+            }
+        }
+
+        /* ESC ile drawer veya overlay kapat */
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') { closeCatDrawer(); }
+            if (e.key === 'Escape') { 
+                closeCatDrawer(); 
+                closeSearchOverlay();
+            }
         });
     </script>
+
+    <!-- ─── ARAMA OVERLAY ────────────────────────────────────── -->
+    <div class="search-overlay" id="searchOverlay">
+        <button class="search-overlay-close" onclick="closeSearchOverlay()" aria-label="Kapat">
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="search-overlay-content">
+            <form action="{{ route('home') }}" method="GET" class="search-overlay-form">
+                @if(request('category'))
+                    <input type="hidden" name="category" value="{{ request('category') }}">
+                @endif
+                <div class="search-overlay-input-group">
+                    <input type="text" name="q" id="searchOverlayInput" placeholder="Aramak istediğiniz kelimeyi yazın..." value="{{ request('q') }}" autocomplete="off">
+                    <button type="submit" aria-label="Ara"><i class="fas fa-search"></i></button>
+                </div>
+                <p class="search-overlay-tip">Aramak için Enter'a basın veya büyüteç simgesine tıklayın.</p>
+            </form>
+        </div>
+    </div>
 </body>
 </html>
