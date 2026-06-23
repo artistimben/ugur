@@ -134,6 +134,8 @@
     gap: 12px;
     list-style: none;
     padding: 0;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 .pagination-item {

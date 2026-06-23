@@ -61,7 +61,7 @@
 
             @if($posts->hasPages())
             <div class="pagination-wrapper">
-                {{ $posts->appends(request()->query())->links('vendor.pagination.premium') }}
+                {{ $posts->onEachSide(1)->appends(request()->query())->links('vendor.pagination.premium') }}
             </div>
             @endif
         @endif
