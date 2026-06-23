@@ -154,6 +154,9 @@
         @php 
             $leftAd  = $ads->where('position', 'left_gutter')->first();
             $rightAd = $ads->where('position', 'right_gutter')->first();
+            
+            $leftAdImg = $leftAd && $leftAd->image ? (\Illuminate\Support\Str::startsWith($leftAd->image, ['http://', 'https://', 'storage/']) ? $leftAd->image : 'storage/' . $leftAd->image) : null;
+            $rightAdImg = $rightAd && $rightAd->image ? (\Illuminate\Support\Str::startsWith($rightAd->image, ['http://', 'https://', 'storage/']) ? $rightAd->image : 'storage/' . $rightAd->image) : null;
         @endphp
 
         @if($leftAd)
@@ -161,7 +164,7 @@
                 <span class="ad-label">REKLAM</span>
                 @if($leftAd->type == 'script') {!! $leftAd->script_code !!} @else
                     <a href="{{ $leftAd->link }}" target="_blank">
-                        <img src="{{ \Illuminate\Support\Str::startsWith($leftAd->image, ['http://', 'https://']) ? $leftAd->image : asset($leftAd->image) }}" onerror="this.onerror=null; this.parentElement.parentElement.style.display='none';">
+                        <img src="{{ \Illuminate\Support\Str::startsWith($leftAdImg, ['http://', 'https://']) ? $leftAdImg : asset($leftAdImg) }}" onerror="this.onerror=null; this.parentElement.parentElement.style.display='none';">
                     </a>
                 @endif
             </div>
@@ -172,7 +175,7 @@
                 <span class="ad-label">REKLAM</span>
                 @if($rightAd->type == 'script') {!! $rightAd->script_code !!} @else
                     <a href="{{ $rightAd->link }}" target="_blank">
-                        <img src="{{ \Illuminate\Support\Str::startsWith($rightAd->image, ['http://', 'https://']) ? $rightAd->image : asset($rightAd->image) }}" onerror="this.onerror=null; this.parentElement.parentElement.style.display='none';">
+                        <img src="{{ \Illuminate\Support\Str::startsWith($rightAdImg, ['http://', 'https://']) ? $rightAdImg : asset($rightAdImg) }}" onerror="this.onerror=null; this.parentElement.parentElement.style.display='none';">
                     </a>
                 @endif
             </div>
@@ -180,11 +183,14 @@
     @endif
 
     @if(isset($ads) && ($topAd = $ads->where('position', 'top')->first()))
+        @php
+            $topAdImg = $topAd->image ? (\Illuminate\Support\Str::startsWith($topAd->image, ['http://', 'https://', 'storage/']) ? $topAd->image : 'storage/' . $topAd->image) : null;
+        @endphp
         <div class="container" style="margin: 20px auto; text-align: center;">
             <span class="ad-label">REKLAM</span>
             @if($topAd->type == 'script') {!! $topAd->script_code !!} @else
                 <a href="{{ $topAd->link }}" target="_blank">
-                    <img src="{{ \Illuminate\Support\Str::startsWith($topAd->image, ['http://', 'https://']) ? $topAd->image : asset($topAd->image) }}" style="max-width: 100%; border-radius: 4px;">
+                    <img src="{{ \Illuminate\Support\Str::startsWith($topAdImg, ['http://', 'https://']) ? $topAdImg : asset($topAdImg) }}" style="max-width: 100%; border-radius: 4px;">
                 </a>
             @endif
         </div>
